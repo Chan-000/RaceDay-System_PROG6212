@@ -4,7 +4,7 @@ Part 1 SQL database script which matches the final
 ERD and API endpoint plan
 */
 
---drops the database if it already exist
+--Drops the database if it already exists
 IF DB_ID('RaceDay') IS NOT NULL
 BEGIN 
    ALTER DATABASE RaceDay SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
