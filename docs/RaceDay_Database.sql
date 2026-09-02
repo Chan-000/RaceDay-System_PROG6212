@@ -120,8 +120,8 @@ GO
 
 -- insert events
 INSERT INTO Events (EventName, Description, EventDate, Location, DistanceKm, MaxParticipants, EventTypeID, OrganiserID) VALUES
-('Two Oceans Marathon', 'A famous ultra marathon and half-marathon held annually in Capetown', '2026-09-13', 'Cape Town, Western Cape', 10.00, 500, 1, 1),
-('Limpopo Family Walk', 'Community walking event for particpants of all ages', '2026-10-24', 'Polokwane, Limpopo', 5.00, 250, 2, 2),
+('Two Oceans Marathon', 'A famous ultra marathon and half-marathon held annually in Cape Town ', '2026-09-13', 'Cape Town, Western Cape', 10.00, 500, 1, 1),
+('Limpopo Family Walk', 'Community walking event for participants of all ages', '2026-10-24', 'Polokwane, Limpopo', 5.00, 250, 2, 2),
 ('Pretoria Cycle Challenge', 'Road cycling challenge around Pretoria', '2026-11-07', 'Pretoria, Gauteng', 80.00, 200, 3, 1);
 GO
 
