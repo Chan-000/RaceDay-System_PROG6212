@@ -127,9 +127,9 @@ GO
 
 -- insert categories
 INSERT INTO Category (EventID, CategoryName, AgeMin, AgeMax, EntryFee) VALUES
-(1,'Junior', 13,39, 200.00),
-(1,'40-49', 40,49, 250.00),
-(1,'Veteran', 50,99, 100.00),
+(1, 'Junior', 13,39, 200.00),
+(1, '40-49', 40,49, 250.00),
+(1, 'Veteran', 50,99, 100.00),
 (2,'Junior', 13,19, 50.00),
 (2,'Adult Walk', 20,59, 50.00),
 (2,'Veteran Walk', 60,99, 40.00),
