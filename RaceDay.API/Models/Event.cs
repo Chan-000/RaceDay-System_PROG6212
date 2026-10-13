@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RaceDay.API.Models
 {
-    [Table ("Events")]
+ 
     public class Event
     {
         [Key]
@@ -17,7 +17,6 @@ namespace RaceDay.API.Models
         public string? Description { get; set; }
 
         [Required]
-        [Column(TypeName = "date")]
         public DateTime EventDate { get; set; }
 
         [Required]
@@ -26,7 +25,7 @@ namespace RaceDay.API.Models
 
         [Required]
         [Column(TypeName = "decimal(6,2)")]
-        public decimal Distance { get; set; }
+        public decimal DistanceKm { get; set; }
 
         [Required]
         public int MaxParticipants { get; set; }
