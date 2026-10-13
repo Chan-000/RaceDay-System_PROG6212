@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RaceDay.API.Models
 {
     [Table ("Events")]
-    public class Events
+    public class Event
     {
         [Key]
         public int EventID { get; set; }
@@ -41,7 +41,7 @@ namespace RaceDay.API.Models
 
         //Relationship to the user who organises the event
         [ForeignKey(nameof(OrganiserID))]
-        public Users? Organiser { get; set; }
+        public User? Organiser { get; set; }
 
         // categories belonging to this event
         public ICollection<Category> Categories { get; set; } = new List<Category> ();

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RaceDay.API.Models
 {
-    public class Results
+    public class Result
     {
         [Key]
         public int ResultID { get; set; }

@@ -23,7 +23,7 @@ namespace RaceDay.API.Models
         public decimal EntryFee { get; set; } = 0;
 
         // Event to which the category belongs
-        public Events? Event {  get; set; }
+        public Event? Event {  get; set; }
 
         //Enrolments using this category
         public ICollection<Enrolment> Enrolments { get; set; } = new List<Enrolment>();

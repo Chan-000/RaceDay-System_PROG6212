@@ -24,15 +24,15 @@ namespace RaceDay.API.Models
 
         // user who registered
         [ForeignKey(nameof(ParticipantID))]
-        public Users? Participant { get; set; }
+        public User? Participant { get; set; }
 
         //Event being entered
-        public Events? Event { get; set; }
+        public Event? Event { get; set; }
 
         //selected category
         public Category? Category { get; set; }
 
         // result for this enrolment (optional)
-        public Results? Result { get; set; }
+        public Result? Result { get; set; }
     }
 }

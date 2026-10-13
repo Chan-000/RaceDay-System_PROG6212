@@ -15,6 +15,6 @@ namespace RaceDay.API.Models
         public string? Description { get; set; }
 
         //events that belong to this type
-        public ICollection<Events> Events { get; set; } = new List<Events>();
+        public ICollection<Event> Events { get; set; } = new List<Event>();
     }
 }
