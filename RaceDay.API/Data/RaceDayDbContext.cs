@@ -67,7 +67,7 @@ namespace RaceDay.API.Data
             {
                 entity.ToTable("Events", table =>
                 {
-                    table.HasCheckConstraint("CK_Events_DistanceKm", "[Distance] > 0");
+                    table.HasCheckConstraint("CK_Events_DistanceKm", "[DistanceKm] > 0");
                     table.HasCheckConstraint("CK_Events_MaxParticipants", "[MaxParticipants] > 0");
                 });
 
@@ -105,7 +105,7 @@ namespace RaceDay.API.Data
                 entity.ToTable("Category", table =>
                 {
                     table.HasCheckConstraint("CK_Category_AgeRange", "[AgeMin] IS NULL OR [AgeMax] IS NULL OR [AgeMin] <= [AgeMax]");
-                    table.HasCheckConstraint("CK_Category_EntryFee", "[EntryFee} >= 0");
+                    table.HasCheckConstraint("CK_Category_EntryFee", "[EntryFee] >= 0");
                 });
 
                 entity.HasKey(c => c.CategoryID);
@@ -133,7 +133,8 @@ namespace RaceDay.API.Data
                 entity.HasKey(e => e.EnrolmentID);
 
                 entity.Property(e => e.EnrolmentDate)
-                     .HasColumnType("date").HasDefaultValueSql("CAST(GETDATE() As date");
+                     .HasColumnType("date") 
+                     .HasDefaultValueSql("CAST(GETDATE() AS date)");
 
                 entity.Property(e => e.EnrolmentStatus)
                      .HasMaxLength(20) .HasDefaultValue("Confirmed") .IsRequired();
