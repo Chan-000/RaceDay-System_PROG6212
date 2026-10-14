@@ -3,8 +3,18 @@ using RaceDay.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Connect to the RaceDay SQL Server database
 builder.Services.AddDbContext<RaceDayDbContext>(options =>
       options.UseSqlServer(builder.Configuration.GetConnectionString("RaceDayConnection")));
+
+// Add session support
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -22,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSession();
 
 app.UseAuthorization();
 
