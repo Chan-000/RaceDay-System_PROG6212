@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "kQw6cITsCeI=",
+  "dgSpecHash": "rcptz3xAfSU=",
   "success": true,
   "projectFilePath": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.API\\RaceDay.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Chantel\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
+    "C:\\Users\\Chantel\\.nuget\\packages\\bcrypt.net-next\\4.2.0\\bcrypt.net-next.4.2.0.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
