@@ -183,3 +183,6 @@ C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\refint
 C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\RaceDay.API.pdb
 C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\RaceDay.API.genruntimeconfig.cache
 C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\ref\RaceDay.API.dll
+C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\bin\Debug\net8.0\BCrypt-Net-Next.dll
+C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\bin\Debug\net8.0\RaceDay.Contracts.dll
+C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\bin\Debug\net8.0\RaceDay.Contracts.pdb

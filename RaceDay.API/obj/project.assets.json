@@ -1606,6 +1606,16 @@
             "rid": "win"
           }
         }
+      },
+      "RaceDay.Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/RaceDay.Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/RaceDay.Contracts.dll": {}
+        }
       }
     }
   },
@@ -4484,6 +4494,11 @@
         "system.windows.extensions.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "RaceDay.Contracts/1.0.0": {
+      "type": "project",
+      "path": "../RaceDay.Contracts/RaceDay.Contracts.csproj",
+      "msbuildProject": "../RaceDay.Contracts/RaceDay.Contracts.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -4491,6 +4506,7 @@
       "BCrypt.Net-Next >= 4.2.0",
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.11",
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.11",
+      "RaceDay.Contracts >= 1.0.0",
       "Swashbuckle.AspNetCore >= 6.6.2",
       "Swashbuckle.AspNetCore.Annotations >= 8.1.1"
     ]
@@ -4527,7 +4543,11 @@
         "net8.0": {
           "framework": "net8.0",
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.Contracts\\RaceDay.Contracts.csproj": {
+              "projectPath": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.Contracts\\RaceDay.Contracts.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
