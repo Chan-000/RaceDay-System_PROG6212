@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RaceDay.API.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("api/[auth]")]
     public class AuthController : ControllerBase
     {
         private readonly RaceDayDbContext _context;
