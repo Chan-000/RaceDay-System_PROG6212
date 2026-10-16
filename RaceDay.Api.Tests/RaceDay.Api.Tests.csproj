@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RaceDay.API\RaceDay.API.csproj" />
+    <ProjectReference Include="..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
