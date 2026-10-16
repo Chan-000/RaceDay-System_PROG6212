@@ -64,3 +64,91 @@ The Part 1 workflow checks that the following files and folders exist:-
 
 ## YouTube Link
 https://youtu.be/hYTrZHQ9RjA
+
+## Part 2
+
+### Technologies Used
+- ASP.NET Core Web API
+- .NET 8
+- Entity Framework Core 
+- SQL Server
+- Swagger and OpenAPI
+- xUnit for Unit testing
+- Git and GitHub
+
+### Project Structure
+- 'RaceDay.API' -- Main Web API project
+- 'RaceDay.Contracts -- DTOs
+- 'RaceDay.Api.Tests' -- Unit Tests
+- 'docs' -- Part 1 planning documents
+RaceDay
+|
+|-- docs
+| |-- RaceDay_ERD.pdf
+| |-- RaceDay_API_Endpoint_Plan.pdf
+| `-- RaceDay_Database.sql
+|
+|-- RaceDay.Api
+| |-- Controllers
+| |-- Data
+| |-- Migrations
+| |-- Models
+| |-- appsettings.json
+| `-- Program.cs
+|
+|-- RaceDay.Contracts
+| `-- Dtos -- Dtos.cs
+|
+|-- RaceDay.Api.Tests
+| `-- RaceDayApiTests.cs
+| `-- RaceDayWebApplicationFactory.cs
+|
+|-- .github
+| `-- workflows
+|  `-- Part1-ci.yml
+|  `-- Part2-ci.yml 
+|
+`-- README.md
+
+### Database Setup
+1. Start your SQL Server instance (SSMS)
+2. Create or prepare the 'RaceDayDb' database using the project existing database setup and migrations
+3. Update the API connection string to match your SQL server instance
+4. Apply any required Entity Framework Core migrations
+5.  Confirm that the database tables exists
+
+### Authentication
+- Users cab register as an Organiser or Participant
+- Password are hashed
+- Login creates a server side session containing 'UserId' and 'Role'
+- Role based access is enfored on protected endpoints
+
+### API EndPoints
+- Auth: Register, Login, Logout
+- User Profiles: View and Update own profile
+- Events: create, view, update and delete events
+- EventTypes: contains types of events
+- Categories: manage categories per events
+- Enrolments: Participants can enrol, Organisers can view
+- Results: Organisers captures results and Participants view their own.
+
+### Swagger
+Swagger provides an interactive interface for inspecting and testing the API endpoints. 
+
+### Unit Testing
+The project includes automated tests for API functionality, authentication and access control.
+
+To run tests locally:
+
+1. Open the Solution Visual Studio
+2. Open Test Explorer
+3. Select Run All
+4. Confirm that the test pass
+
+### CI/CD
+Github Actions workflow automatically builds the solution and run all unit tests on every push.
+
+### GitHub Actions Screenshot
+![alt text](image.png)
+
+### Youtube Link (part2)
