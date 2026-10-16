@@ -52,6 +52,7 @@ namespace RaceDay.API.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
                 Role = user.Role,
                 
                 Message = "User registered successfully."
