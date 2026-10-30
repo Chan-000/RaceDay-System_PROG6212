@@ -3,6 +3,31 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//Configure session services
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+//Allows services to access the current HTTP context
+builder.Services.AddHttpContextAccessor();
+
+//Configure HttpClient to communicate with RaceDay API
+builder.Services.AddHttpClient("RaceDayApi", client =>
+{
+    string baseUrl = builder.Configuration["ApiSettings:BaseUrl"]
+        ?? throw new InvalidOperationException("ApiSettings:BaseUrl is missing.");
+    
+    client.BaseAddress = new Uri(baseUrl);
+});
+
+//Register our Api client
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -17,6 +42,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 
