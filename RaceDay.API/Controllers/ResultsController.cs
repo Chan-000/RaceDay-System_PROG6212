@@ -6,6 +6,8 @@ using RaceDay.API.Models;
 
 namespace RaceDay.API.Controllers
 {
+    //Allowws organisers to capture race results and particpants to view their persona results
+
     [Route("api/[controller]")]
     [ApiController]
     public class ResultsController : ControllerBase
@@ -19,7 +21,7 @@ namespace RaceDay.API.Controllers
 
         private bool IsOrganiser()
         {
-            return HttpContext.Session.GetInt32("UsersID") != null
+            return HttpContext.Session.GetInt32("UserID") != null
                 && HttpContext.Session.GetString("Role") == "Organiser";
         }
 
@@ -30,7 +32,7 @@ namespace RaceDay.API.Controllers
                 return Unauthorized("Please log in first.");
 
             if (!IsOrganiser())
-                return Forbid();
+                return StatusCode(403, "You do not have permission to perform this action.");
 
             if (request.FinishTime < TimeSpan.Zero)
                 return BadRequest("Finish time cannot be negative");
@@ -45,7 +47,7 @@ namespace RaceDay.API.Controllers
             var userId = HttpContext.Session.GetInt32("UserID")!.Value;
 
             if (enrolment.Event?.OrganiserID != userId)
-                return Forbid();
+                return StatusCode(403, "You do not have permission to perform this action.");
 
             if (enrolment.EnrolmentStatus != "Confirmed")
                 return BadRequest("A result can only be recorded for a confirmed enrolment.");
@@ -86,10 +88,13 @@ namespace RaceDay.API.Controllers
                 return NotFound();
 
             if (result.Enrolment?.Event?.OrganiserID != userId)
-                return Forbid();
+                return StatusCode(403, "You do not have permission to perform this action.");
 
-            result.FinishTime = result.FinishTime;
-            result.FinishPosition = result.FinishPosition;
+            if (request.FinishTime < TimeSpan.Zero)
+                return BadRequest("Finish time cannot be negative.");
+
+            result.FinishTime = request.FinishTime;
+            result.FinishPosition = request.FinishPosition;
 
             await _context.SaveChangesAsync();
             return Ok(result);
@@ -106,14 +111,17 @@ namespace RaceDay.API.Controllers
                 return Unauthorized("Please log in first");
 
             if (role != "Participant")
-                return Forbid();
+                return StatusCode(403, "You do not have permission to perform this action.");
 
             var results = await _context.Results
-                .Include(r => r.Enrolment!)
-                   .ThenInclude(e => e.Event)
-                .Include(r => r.Enrolment!)
-                   .ThenInclude(e => e.Category)
                 .Where(r => r.Enrolment != null &&  r.Enrolment.ParticipantID == userId)
+                .Select(r => new ResultDto
+                {
+                    ResultID = r.ResultID,
+                    EnrolmentID = r.EnrolmentID,
+                    FinishTime = r.FinishTime,
+                    FinishPosition = r.FinishPosition
+                })
                 .ToListAsync();
 
             return Ok(results);

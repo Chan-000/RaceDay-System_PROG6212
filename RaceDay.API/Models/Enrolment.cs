@@ -20,7 +20,7 @@ namespace RaceDay.API.Models
 
         [Required]
         [MaxLength(20)]
-        public string EnrolmentStatus { get; set; } = "confirmed";
+        public string EnrolmentStatus { get; set; } = "Confirmed";
 
         // user who registered
         [ForeignKey(nameof(ParticipantID))]

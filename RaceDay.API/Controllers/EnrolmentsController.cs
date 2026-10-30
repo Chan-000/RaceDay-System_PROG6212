@@ -23,8 +23,11 @@ namespace RaceDay.API.Controllers
             var userId = HttpContext.Session.GetInt32("UserID");
             var role = HttpContext.Session.GetString("Role");
 
-            if (userId == null || role != "Participant")
+            if (userId == null )
                 return Unauthorized("Only Partcipants can enrol in events");
+
+            if (role != "Participant")
+                return StatusCode(403, "You do not have permission to perform this action.");
 
             var eventItem = await _context.Events
                 .SingleOrDefaultAsync(e => e.EventID == eventId);
@@ -63,7 +66,7 @@ namespace RaceDay.API.Controllers
                 EventID = eventId,
                 CategoryID = request.CategoryID,
                 EnrolmentDate = DateTime.Today,
-                EnrolmentStatus = "confirmed"
+                EnrolmentStatus = "Confirmed"
             };
 
             _context.Enrolments.Add(enrolment);
@@ -77,17 +80,26 @@ namespace RaceDay.API.Controllers
         public async Task<IActionResult> GetMyEnrolments()
         {
             var userId = HttpContext.Session.GetInt32("UserID");
+            var role = HttpContext.Session.GetString("Role");
 
             if (userId == null)
                 return Unauthorized("Please log in first.");
 
-            if (HttpContext.Session.GetString("Role") != "Participant")
-                return Forbid();
+            if (role != "Participant")
+                return StatusCode(403, "You do not have permission to perform this action.");
 
             var enrolments = await _context.Enrolments
                 .Where(e => e.ParticipantID == userId.Value)
-                .Include(e => e.Event)
-                .Include(e => e.Category)
+                .Select(e => new EnrolmentDto
+                {
+                    EnrolmentID = e.EnrolmentID,
+                    EventID = e.EventID,
+                    EventName = e.Event != null ? e.Event.EventName : null,
+                    CategoryID = e.CategoryID,
+                    CategoryName = e.Category != null ? e.Category.CategoryName : null,
+                    EnrolmentDate = e.EnrolmentDate,
+                    EnrolmentStatus = e.EnrolmentStatus
+                })
                 .ToListAsync();
 
             return Ok(enrolments);
@@ -97,15 +109,19 @@ namespace RaceDay.API.Controllers
         public async Task<IActionResult> GetEventEnrolments(int eventId)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
+            var role = HttpContext.Session.GetString("Role");
 
-            if (HttpContext.Session.GetString("Role") != "Organiser")
-                return Forbid();
+            if (userId == null)
+                return Unauthorized("Please log in first.");
+
+            if (role != "Organiser")
+                return StatusCode(403, "You do not have permission to perform this action.");
 
             var eventExists = await _context.Events.AnyAsync(e =>
                 e.EventID == eventId && e.OrganiserID == userId);
 
             if (!eventExists)
-                return NotFound("Event not found or you do not own it");
+                return NotFound("Event not found or you do not own it.");
 
             var enrolments = await _context.Enrolments
                 .Where(e => e.EventID == eventId)
@@ -114,6 +130,35 @@ namespace RaceDay.API.Controllers
                 .ToListAsync();
 
             return Ok(enrolments);
+        }
+
+
+        [HttpPut("{id:int}/status")]
+        public async Task<IActionResult> UpdateEnrolmentStatus(int id, UpdateEnrolmentStatusRequest request)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            var role = HttpContext.Session.GetString("Role");
+
+            if (userId == null)
+                return Unauthorized("Please log in first.");
+
+            var enrolment = await _context.Enrolments
+                .Include(e => e.Event)
+                .FirstOrDefaultAsync(e => e.EnrolmentID == id);
+
+            if (enrolment == null)
+                return Unauthorized("Enrolment not found.");
+
+            bool isOwner = enrolment.ParticipantID == userId;
+            bool isEventOrganiser = role == "Organiser" && enrolment.Event?.OrganiserID == userId;
+
+            if (!isOwner && !isEventOrganiser)
+                return StatusCode(403, "You do not have permission to perform this action.");
+
+            enrolment.EnrolmentStatus = request.EnrolmentStatus;
+            await _context.SaveChangesAsync();
+
+            return Ok("Enrolment status updated successfully.");
         }
     }
 }

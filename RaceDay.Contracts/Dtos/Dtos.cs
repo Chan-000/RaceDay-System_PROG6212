@@ -73,6 +73,7 @@ namespace RaceDay.Contracts
         public DateTime EventDate { get; set; }
         [Required, MaxLength(180)]
         public string Location { get; set; } = string.Empty;
+        [Range(typeof(decimal), "0.01", "999999")]
         public decimal DistanceKm { get; set; }
         [Range(1, int.MaxValue)]
         public int MaxParticipants { get; set; }
@@ -94,6 +95,7 @@ namespace RaceDay.Contracts
         public decimal DistanceKm { get; set; }
         public int MaxParticipants { get; set; }
         public int EventTypeID { get; set; }
+        public string? EventTypeName { get; set; }
         public int OrganiserID { get; set; }
     }
 
@@ -137,7 +139,9 @@ namespace RaceDay.Contracts
         public int EnrolmentID { get; set; }
         public int ParticipantID { get; set; }
         public int EventID { get; set; }
+        public string? EventName { get; set; }
         public int CategoryID { get; set; }
+        public string? CategoryName { get; set; }
         public DateTime EnrolmentDate { get; set; }
         public string EnrolmentStatus { get; set; } = string.Empty;
     }

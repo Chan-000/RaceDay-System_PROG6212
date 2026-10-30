@@ -7,6 +7,9 @@ using RaceDay.Contracts;
 
 namespace RaceDay.API.Controllers
 {
+    //Manage RaceDay events
+    //Organisers can create,update, and delete their own events oth roles can view events
+
     [Route("api/[controller]")]
     [ApiController]
     public class EventsController : ControllerBase
@@ -30,7 +33,19 @@ namespace RaceDay.API.Controllers
         {
             var events = await _context.Events
                 .Include(e => e.EventType)
-                .Include(e => e.Categories)
+                .Select(e => new EventDto
+                {
+                    EventID = e.EventID,
+                    EventName = e.EventName,
+                    Description = e.Description,
+                    EventDate = e.EventDate,
+                    Location = e.Location,
+                    DistanceKm = e.DistanceKm,
+                    MaxParticipants = e.MaxParticipants,
+                    EventTypeID = e.EventTypeID,
+                    EventTypeName = e.EventType != null ? e.EventType.TypeName : null,
+                    OrganiserID = e.OrganiserID
+                })
                 .ToListAsync();
 
             return Ok(events);
@@ -42,8 +57,21 @@ namespace RaceDay.API.Controllers
         {
             var item = await _context.Events
                 .Include(e => e.EventType)
-                .Include(e => e.Categories)
-                .SingleOrDefaultAsync(e => e.EventID == id);
+                .Where(e => e.EventID == id)
+                .Select(e => new EventDto
+                {
+                    EventID = e.EventID,
+                    EventName = e.EventName,
+                    Description = e.Description,
+                    EventDate = e.EventDate,
+                    Location = e.Location,
+                    DistanceKm = e.DistanceKm,
+                    MaxParticipants = e.MaxParticipants,
+                    EventTypeID = e.EventTypeID,
+                    EventTypeName = e.EventType != null ? e.EventType.TypeName : null,
+                    OrganiserID = e.OrganiserID
+                })
+                .FirstOrDefaultAsync();
 
             return item == null ? NotFound() : Ok(item);
         }
@@ -57,11 +85,24 @@ namespace RaceDay.API.Controllers
                 return Unauthorized("Please log in first;");
 
             if (HttpContext.Session.GetString("Role") != "Organiser")
-                return Forbid();
+                return StatusCode(403, "You do not have permission to perform this action.");
 
             var events = await _context.Events
-                .Where(e => e.OrganiserID == userId.Value)
                 .Include(e => e.EventType)
+                .Where(e => e.OrganiserID == userId.Value)
+                .Select(e => new EventDto
+                {
+                    EventID = e.EventID,
+                    EventName = e.EventName,
+                    Description = e.Description,
+                    EventDate = e.EventDate,
+                    Location = e.Location,
+                    DistanceKm = e.DistanceKm,
+                    MaxParticipants = e.MaxParticipants,
+                    EventTypeID = e.EventTypeID,
+                    EventTypeName = e.EventType != null ? e.EventType.TypeName : null,
+                    OrganiserID = e.OrganiserID
+                })
                 .ToListAsync();
 
             return Ok(events);
@@ -112,9 +153,9 @@ namespace RaceDay.API.Controllers
             var userId = HttpContext.Session.GetInt32("UserID")!.Value;
 
             if (item.OrganiserID != userId)
-                return Forbid();
+                return StatusCode(403, "You do not have permission to perform this action.");
 
-            if(!await _context.EventTypes.AnyAsync(
+            if (!await _context.EventTypes.AnyAsync(
                t => t.EventTypeID == request.EventTypeID))
                return BadRequest("The selected event type does not exist.");
 
@@ -145,7 +186,7 @@ namespace RaceDay.API.Controllers
             var userId = HttpContext.Session.GetInt32("UserID")!.Value;
 
             if (item.OrganiserID != userId)
-                return Forbid();
+                return StatusCode(403, "You do not have permission to perform this action.");
 
             _context.Events.Remove(item);
             await _context.SaveChangesAsync();

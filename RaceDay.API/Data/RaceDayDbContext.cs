@@ -3,6 +3,8 @@ using RaceDay.API.Models;
 
 namespace RaceDay.API.Data
 {
+    // Database context for the RaceDay system
+    // Configures all tables, relationships,constraints and keys using Entity Framework Core
     public class RaceDayDbContext: DbContext
     {
         public RaceDayDbContext(DbContextOptions<RaceDayDbContext> options) : base(options)

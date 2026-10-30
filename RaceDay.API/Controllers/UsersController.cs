@@ -46,7 +46,7 @@ namespace RaceDay.API.Controllers
         [HttpPut("me")]
         public async Task<IActionResult> UpdateMyProfile(UpdateProfileRequest request)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
+            var userId = HttpContext.Session.GetInt32("UserID");
 
             if (userId == null)
                 return Unauthorized("Please log in first");

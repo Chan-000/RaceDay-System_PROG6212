@@ -5,6 +5,8 @@ using RaceDay.API.Models;
 
 namespace RaceDay.API.Controllers
 {
+    //Provides the list of availale event types
+
     [Route("api/[Controller]")]
     [ApiController]
     public class EventTypesController : ControllerBase
