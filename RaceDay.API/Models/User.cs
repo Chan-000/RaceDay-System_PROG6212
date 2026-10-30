@@ -2,6 +2,7 @@
 
 namespace RaceDay.API.Models
 {
+    //
     public class User
     {
         public int UserID { get; set; }
