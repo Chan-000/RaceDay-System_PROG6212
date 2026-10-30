@@ -1,3 +1,5 @@
+using RaceDay.Mvc.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -26,7 +28,7 @@ builder.Services.AddHttpClient("RaceDayApi", client =>
 });
 
 //Register our Api client
-
+builder.Services.AddScoped<RaceDayApiClient>();
 
 var app = builder.Build();
 
