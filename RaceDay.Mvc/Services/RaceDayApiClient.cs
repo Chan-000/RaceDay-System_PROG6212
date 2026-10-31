@@ -37,7 +37,7 @@ namespace RaceDay.Mvc.Services
             return request;
         }
 
-        private async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, object? body = null)
+        public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, object? body = null)
         {
             var client = CreateClient();
             using var request = CreateRequest(method, url);
