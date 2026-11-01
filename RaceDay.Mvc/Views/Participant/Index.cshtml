@@ -4,6 +4,16 @@
 
 <div class="container">
 
+	@if (TempData["Error"] != null)
+	{
+		<div class="alert alert-danger">@TempData["Error"]</div>
+	}
+
+	@if (TempData["Success"] != null)
+	{
+		<div class="alert alert-success">@TempData["Success"]</div>
+	}
+
 	<div class="mb-4"> 
 		<h1 class="fw-bold">Welcome to RaceDay!</h1>
 		<p class="text-muted">
