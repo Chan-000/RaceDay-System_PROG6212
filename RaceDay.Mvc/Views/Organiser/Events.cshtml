@@ -83,8 +83,9 @@
 
 										<div class="d-flex gap-2">
 
+											<a asp-action="Categories" asp-route-eventId="@item.EventID" class="btn btn-sm btn-info">Categories</a>
 											<a asp-action="EditEvent" asp-route-id="@item.EventID" class="btn btn-sm btn-primary">Edit</a>
-
+											
 											<form asp-action="DeleteEvent"
 											      asp-route-id="@item.EventID"
 											      method="post"

@@ -1,0 +1,101 @@
+﻿@model List<RaceDay.Contracts.CategoryDto>
+
+@{
+	ViewData["Title"] = "Manage Categories";
+	int eventId = ViewBag.EventId ?? 0;
+	string eventName = ViewBag.EventName ?? "Event";
+}
+
+<div class="container mt-4">
+
+	@if (TempData["Success"] != null)
+	{
+	<div class="alert alert-success alert-dismissible fade show" role="alert">
+		@TempData["Success"]
+
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+	</div>
+	}
+
+	@if (TempData["Error"] != null)
+	{
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			@TempData["Error"]
+
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	}
+
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<div>
+			<a asp-controller="Organiser" asp-action="Events" class="text-decoration-none">← Back to Events</a>
+			<h2 class="fw-bold mt-3">Manage Event Categories</h2>
+			<p class="text-muted">Event: <strong>@eventName</strong></p>
+		</div>
+		<div>
+			<a asp-action="CreateCategory" asp-route-eventId="@eventId" class="btn btn-success">+ Add Category</a>
+		</div>
+	</div>
+	
+	@if (Model == null || !Model.Any())
+	{
+		<div class="card shadow-sm border-0">
+			<div class="card-body text-center py-5">
+				<h5>No categories Found</h5>
+				<p class="text-muted">No categories found for <strong>@eventName</strong></p>
+
+				<a asp-action="CreateCategory" asp-route-eventId="@eventId" class="btn btn-primary">Create First Category</a>
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="card shadow-sm border-0">
+			<div class="card-body">
+
+				<div class="table-responsive">
+					<table class="table table-hover align-middle">
+
+						<thead class="table-dark">
+							<tr>
+								<th>Category Name</th>
+								<th>Age Min</th>
+								<th>Age Max</th>
+								<th>Entry Fee</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							@foreach (var item in Model)
+							{
+								<tr>
+									<td class="fw-bold">@item.CategoryName</td>
+									<td>@(item.AgeMin?.ToString() ?? "-")</td>
+									<td>@(item.AgeMax?.ToString() ?? "-")</td>
+									<td>R @item.EntryFee.ToString("0.00")</td>
+									<td>
+										<div class="d-flex gap-2">
+											<a asp-action="EditCategory" asp-route-id="@item.CategoryID" asp-route-eventId="@eventId" class="btn btn-sm btn-primary">Edit</a>
+
+											<form asp-action="DeleteCategory"
+											      method="post"
+												  class="d-inline"
+												  onsubmit="return confirm('Are you sure you want to delete this categoy?')">
+												@Html.AntiForgeryToken()
+												<input type="hidden" name="id" value="@item.CategoryID"/>
+												<input type="hidden" name="eventId" value="@eventId" />
+												<button type="submit" class="btn btn-sm btn-danger">Delete</button>
+											</form>
+										</div>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	}
+</div>

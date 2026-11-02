@@ -239,5 +239,172 @@ namespace RaceDay.Mvc.Controllers
             TempData["Success"] = "Event deleted successfully!";
             return RedirectToAction(nameof(Events));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Categories(int eventId)
+        {
+            var accessResult = CheckOrganiserAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            var eventResponse = await _api.SendAsync(HttpMethod.Get, "api/events/" + eventId);
+            if (!eventResponse.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Event not found.";
+                return RedirectToAction(nameof(Events));
+            }
+            var eventItem = await _api.ReadAsync<EventDto>(eventResponse);
+
+            var response = await _api.SendAsync(HttpMethod.Get, "api/categories/events/" + eventId);
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Could not load categories";
+                return View(new List<CategoryDto>());
+            }
+            var categories = await _api.ReadAsync<List<CategoryDto>>(response) ?? new List<CategoryDto>();
+
+            ViewBag.EventId = eventId;
+            ViewBag.EventName = eventItem?.EventName ?? "Event";
+
+            return View(categories);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateCategory(int eventId)
+        {
+            var accessResult = CheckOrganiserAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            using var response = await _api.SendAsync(HttpMethod.Get, "api/events/" + eventId);
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Event not found.";
+                return Redirect(nameof(Events));
+            }
+
+            var eventItem = await _api.ReadAsync<EventDto>(response);
+            
+            ViewBag.EventId = eventId;
+            ViewBag.EventName = eventItem?.EventName ?? "Event";
+
+            return View(new CreateCategoryRequest());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCategory(int eventId, CreateCategoryRequest model)
+        {
+            var accessResult = CheckOrganiserAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.EventId = eventId;
+                return View(model);
+            }
+
+            using var response = await _api.SendAsync(HttpMethod.Post, "api/categories/events/" + eventId, model);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string error = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError("", error);
+                ViewBag.EventId = eventId;
+                return View(model);
+            }
+
+            TempData["Success"] = "Category created successfully!";
+            return RedirectToAction(nameof(Categories), new {eventId});
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditCategory(int id, int eventId)
+        {
+            var accessResult = CheckOrganiserAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            using var response = await _api.SendAsync(HttpMethod.Get, "api/categories/events/" + eventId);
+
+            if (!response.IsSuccessStatusCode)
+                return NotFound("Could not load categories");
+
+            var categories = await _api.ReadAsync<List<CategoryDto>>(response) ?? new List<CategoryDto>();
+
+            var category = categories.FirstOrDefault(c => c.CategoryID == id);
+
+            if (category == null)
+                return NotFound("Category not found.");
+
+            var model = new CreateCategoryRequest
+            {
+                CategoryName = category.CategoryName,
+                AgeMin = category.AgeMin,
+                AgeMax = category.AgeMax,
+                EntryFee = category.EntryFee
+            };
+
+            ViewBag.EventId = eventId;
+            ViewBag.CategoryId = id;
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCategory(int id, int eventId, CreateCategoryRequest model)
+        {
+            var accessResult = CheckOrganiserAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.EventId = eventId;
+                ViewBag.CategoryId = id;
+
+                return View(model);
+            }
+
+            var response = await _api.SendAsync(HttpMethod.Put, "api/categories/" + id, model);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string error = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError("", error);
+                ViewBag.EventId = eventId;
+                ViewBag.CategoryId = id;
+
+                return View(model);
+            }
+
+            TempData["Success"] = "Category updated successfully";
+
+            return RedirectToAction(nameof(Categories), new { eventId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCategory(int id, int eventId)
+        {
+            var accessResult = CheckOrganiserAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            var response = await _api.SendAsync(HttpMethod.Delete, "api/categories/" + id);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Success"] = "Category deleted successfully";
+            }
+            else
+            {
+                string error = await response.Content.ReadAsStringAsync();
+
+                TempData["Error"] = error;
+            }
+            return RedirectToAction(nameof(Categories), new {eventId});
+        }
     }
 }

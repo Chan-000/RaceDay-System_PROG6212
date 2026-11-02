@@ -40,6 +40,9 @@ namespace RaceDay.API.Controllers
             if (!exists)
                 return NotFound("Event not Found");
 
+            if (!await OwnsEvent(eventId))
+                return StatusCode(403, "You do not have permission to perform this action.");
+            
             var categories = await _context.Categories
                 .Where(c => c.EventID == eventId)
                 .ToListAsync();
@@ -96,6 +99,16 @@ namespace RaceDay.API.Controllers
             if (!await OwnsEvent(category.EventID))
                 return StatusCode(403, "You do not have permission to perform this action.");
 
+            if (request.AgeMin.HasValue && request.AgeMin < 0)
+                return BadRequest("Minimum age cannot be negative.");
+
+            if (request.AgeMax.HasValue && request.AgeMax < 0)
+                return BadRequest("Maximum age cannot be negative.");
+
+            if (request.AgeMin.HasValue && request.AgeMax.HasValue &&
+                request.AgeMin > request.AgeMax)
+                return BadRequest("Minimum age cannot exceed maximum age.");
+
             category.CategoryName = request.CategoryName.Trim();
             category.AgeMin = request.AgeMin;
             category.AgeMax = request.AgeMax;
@@ -132,7 +145,7 @@ namespace RaceDay.API.Controllers
             catch (DbUpdateException)
             {
                 return Conflict("This category has enrolments." +
-                    "Remove the related enrolments before deleting it.");
+                    " Remove the related enrolments before deleting it.");
             }
             
         }

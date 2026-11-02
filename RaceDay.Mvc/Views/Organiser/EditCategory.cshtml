@@ -1,0 +1,64 @@
+﻿@model RaceDay.Contracts.CreateCategoryRequest
+
+@{
+	ViewData["Title"] = "Edit Category";
+	int eventId = ViewBag.EventId ?? 0;
+	int categoryId = ViewBag.CategoryId ?? 0;
+	string eventName = ViewBag.EventName ?? "Event";
+}
+
+
+<div class="container mt-4">
+
+	<div class="mb-4">
+		<a asp-action="Categories" asp-route-eventId="@eventId" class="text-decoration-none">← Back to Events</a>
+		<h2 class="fw-bold mt-3">Edit Category for @eventName</h2>
+	</div>
+
+	<div class="card shadow-sm border-0">
+		<div class="card-body p-4">
+
+			<form asp-action="EditCategory" asp-route-id="@categoryId" asp-route-eventId="@eventId" method="post">
+				@Html.AntiForgeryToken()
+
+				<div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+				<div class="mb-3">
+					<label asp-for="CategoryName" class="form-label"></label>
+					<input asp-for="CategoryName" class="form-control" placeholder="e.g 10km Open" />
+					<span asp-validation-for="CategoryName" class="text-danger"></span>
+				</div>
+
+				<div class="row">
+
+					<div class="col-md-6 mb-3">
+						<label asp-for="AgeMin" class="form-label">Minimum Age</label>
+						<input asp-for="AgeMin" type="number" class="form-control" min="0" />
+						<span asp-validation-for="AgeMin" class="text-danger"></span>
+					</div>
+
+					<div class="col-md-6 mb-3">
+						<label asp-for="AgeMax" class="form-label">Maximum Age</label>
+						<input asp-for="AgeMax" type="number" class="form-control" min="0" />
+						<span asp-validation-for="AgeMax" class="text-danger"></span>
+					</div>
+				</div>
+
+				<div class="mb-3">
+					<label asp-for="EntryFee" class="form-label">Entry Fee (R)</label>
+					<input asp-for="EntryFee" type="number" class="form-control" min="0" step="0.01" placeholder="e.g. 150" />
+					<span asp-validation-for="EntryFee" class="text-danger"></span>
+				</div>
+
+				<div class="d-flex justify-content-between">
+					<a asp-action="Categories" asp-route-eventId="@eventId" class="btn btn-secondary">Cancel</a>
+					<button type="submit" class="btn btn-success">Save Category</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
