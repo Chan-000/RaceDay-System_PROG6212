@@ -122,10 +122,19 @@ namespace RaceDay.API.Controllers
             if (!await OwnsEvent(category.EventID))
                 return StatusCode(403, "You do not have permission to perform this action.");
 
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (DbUpdateException)
+            {
+                return Conflict("This category has enrolments." +
+                    "Remove the related enrolments before deleting it.");
+            }
+            
         }
     }
 }

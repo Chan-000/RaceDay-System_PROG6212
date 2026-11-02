@@ -188,9 +188,18 @@ namespace RaceDay.API.Controllers
             if (item.OrganiserID != userId)
                 return StatusCode(403, "You do not have permission to perform this action.");
 
-            _context.Events.Remove(item);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                _context.Events.Remove(item);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (DbUpdateException)
+            {
+                return Conflict("This event has related categories or enrolment." +
+                    " Remove the related records before deleting it.");
+            }
+            
         }
     }
 }

@@ -4,6 +4,8 @@ namespace RaceDay.Mvc.ViewModels
 {
     public class EventFormVm
     {
+        public int EventID { get; set; }
+
         [Required]
         [MaxLength(150)]
         [Display(Name = "Event Name")]
