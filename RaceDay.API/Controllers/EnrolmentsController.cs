@@ -93,6 +93,10 @@ namespace RaceDay.API.Controllers
                 .Select(e => new EnrolmentDto
                 {
                     EnrolmentID = e.EnrolmentID,
+                    ParticipantID = e.ParticipantID,
+                    ParticipantName = e.Participant != null
+                        ? e.Participant.FirstName + " " + e.Participant.LastName
+                        : null,
                     EventID = e.EventID,
                     EventName = e.Event != null ? e.Event.EventName : null,
                     CategoryID = e.CategoryID,
@@ -105,7 +109,7 @@ namespace RaceDay.API.Controllers
             return Ok(enrolments);
         }
         //GET:api/enrolment/event/{eventId}
-        [HttpGet("events/{eventId:int}/enrolments")]
+        [HttpGet("events/{eventId:int}/enrolments/")]
         public async Task<IActionResult> GetEventEnrolments(int eventId)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
@@ -118,15 +122,27 @@ namespace RaceDay.API.Controllers
                 return StatusCode(403, "You do not have permission to perform this action.");
 
             var eventExists = await _context.Events.AnyAsync(e =>
-                e.EventID == eventId && e.OrganiserID == userId);
+                e.EventID == eventId && e.OrganiserID == userId.Value);
 
             if (!eventExists)
                 return NotFound("Event not found or you do not own it.");
 
             var enrolments = await _context.Enrolments
                 .Where(e => e.EventID == eventId)
-                .Include(e => e.Participant)
-                .Include(e => e.Category)
+                .Select(e => new EnrolmentDto
+                {
+                    EnrolmentID = e.EnrolmentID,
+                    ParticipantID = e.ParticipantID,
+                    ParticipantName = e.Participant != null
+                        ? e.Participant.FirstName + " " + e.Participant.LastName
+                        : null,
+                    EventID = e.EventID,
+                    EventName = e.Event != null ? e.Event.EventName : null,
+                    CategoryID = e.CategoryID,
+                    CategoryName = e.Category != null ? e.Category.CategoryName : null,
+                    EnrolmentDate = e.EnrolmentDate,
+                    EnrolmentStatus = e.EnrolmentStatus
+                })
                 .ToListAsync();
 
             return Ok(enrolments);
@@ -149,7 +165,7 @@ namespace RaceDay.API.Controllers
             if (enrolment == null)
                 return Unauthorized("Enrolment not found.");
 
-            bool isOwner = enrolment.ParticipantID == userId;
+            bool isOwner = enrolment.ParticipantID == userId.Value;
             bool isEventOrganiser = role == "Organiser" && enrolment.Event?.OrganiserID == userId;
 
             if (!isOwner && !isEventOrganiser)

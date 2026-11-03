@@ -406,5 +406,57 @@ namespace RaceDay.Mvc.Controllers
             }
             return RedirectToAction(nameof(Categories), new {eventId});
         }
+
+        
+        // ====== ENROLMENTS =====
+
+        // Display enrolments for all events owned by the organiser
+        [HttpGet]
+        public async Task<IActionResult> Enrolments()
+        {
+            var accessResult = CheckOrganiserAccess();
+
+            if (accessResult != null)
+                return accessResult;
+
+            // Get the organiser's own events
+            using var eventsResponse = await _api.SendAsync(
+                HttpMethod.Get,
+                "api/events/mine");
+
+            if (!eventsResponse.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Could not load your events.";
+                return View(new List<EventEnrolmentsVm>());
+            }
+
+            var events = await _api.ReadAsync<List<EventDto>>(eventsResponse)
+                ?? new List<EventDto>();
+
+            var result = new List<EventEnrolmentsVm>();
+
+            foreach (var eventItem in events)
+            {
+                using var enrolmentsResponse = await _api.SendAsync(HttpMethod.Get,
+                    "api/enrolments/events/" + eventItem.EventID + "/enrolments");
+                    
+                if (!enrolmentsResponse.IsSuccessStatusCode)
+                {  
+                    continue;
+                }
+
+                var enrolments = await _api.ReadAsync<List<EnrolmentDto>>(enrolmentsResponse)
+                    ?? new List<EnrolmentDto>();
+
+                result.Add(new EventEnrolmentsVm
+                {
+                    EventID = eventItem.EventID,
+                    EventName = eventItem.EventName,
+                    Enrolments = enrolments
+                });
+            }
+
+            return View(result);
+        }
     }
 }

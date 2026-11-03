@@ -130,7 +130,7 @@ namespace RaceDay.Contracts
     public class UpdateEnrolmentStatusRequest
     {
         [Required]
-        [RegularExpression("^(Confirmed|Cancelled)$")]
+        [RegularExpression(@"^(Confirmed|Cancelled|Pending)$")]
         public string EnrolmentStatus { get; set; } = "Confirmed";
     }
 
@@ -138,6 +138,7 @@ namespace RaceDay.Contracts
     {
         public int EnrolmentID { get; set; }
         public int ParticipantID { get; set; }
+        public string? ParticipantName { get; set; }
         public int EventID { get; set; }
         public string? EventName { get; set; }
         public int CategoryID { get; set; }
