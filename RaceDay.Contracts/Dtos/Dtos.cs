@@ -145,6 +145,7 @@ namespace RaceDay.Contracts
         public string? CategoryName { get; set; }
         public DateTime EnrolmentDate { get; set; }
         public string EnrolmentStatus { get; set; } = string.Empty;
+        public int? ResultID { get; set; }
     }
 
     //Result
@@ -152,7 +153,9 @@ namespace RaceDay.Contracts
     {
         [Range(1, int.MaxValue)]
         public int EnrolmentID { get; set; }
+        [Required]
         public TimeSpan? FinishTime { get; set; }
+        [Required]
         [Range(1, int.MaxValue)]
         public int? FinishPosition { get; set; }  
     }
@@ -161,6 +164,11 @@ namespace RaceDay.Contracts
     {
         public int ResultID { get; set; }
         public int EnrolmentID { get; set; }
+        public int ParticipantID { get; set; }
+        public string? ParticipantName { get; set; }
+        public int EventID { get; set; }
+        public string? EventName { get; set; }
+        public string? CategoryName { get; set; }
         public TimeSpan? FinishTime { get; set; }
         public int? FinishPosition { get; set; }
     }

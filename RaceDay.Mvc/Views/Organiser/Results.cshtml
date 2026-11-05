@@ -1,0 +1,85 @@
+﻿@model List<RaceDay.Mvc.ViewModels.EventResultsVm>
+@{
+    ViewData["Title"] = "Results";
+}
+<div class="container mt-4" style="max-width:900px">
+
+    <h5 class="fw-bold">Results Overview</h5>
+    <div class="row mb-4 mt-3">
+        <div class="col-6">
+            <h2 class="fw-bold mb-0">@ViewBag.Captured</h2>
+            <small class="text-muted">Results captured</small>
+        </div>
+        <div class="col-6">
+            <h2 class="fw-bold mb-0">@ViewBag.Awaiting</h2>
+            <small class="text-muted">Awaiting results</small>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">You do not have any events yet.</div>
+    }
+    else
+    {
+        @foreach (var eventItem in Model)
+        {
+            <div class="mb-5">
+                <h6 class="fw-bold mb-3">@eventItem.EventName</h6>
+
+                @if (eventItem.Results == null || !eventItem.Results.Any())
+                {
+                    <p class="text-muted small">No results have been captured for this event yet.</p>
+                }
+                else
+                {
+                    <table class="table">
+                        <thead>
+                            <tr class="small text-muted">
+                                <th style="width:80px"></th>
+                                <th>Position</th>
+                                <th>Participant</th>
+                                <th>Finish time</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in eventItem.Results.OrderBy(r => r.FinishPosition))
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td>@item.FinishPosition</td>
+                                    <td>@(item.ParticipantName ?? "Name unavailable")</td>
+                                    <td>@(item.FinishTime?.ToString(@"hh\:mm\:ss") ?? "-")</td>
+                                    <td>
+                                        <a asp-controller="Organiser" asp-action="EditResult" asp-route-id="@item.ResultID"
+                                           class="btn btn-sm btn-outline-dark">Edit</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        }
+    }
+</div>

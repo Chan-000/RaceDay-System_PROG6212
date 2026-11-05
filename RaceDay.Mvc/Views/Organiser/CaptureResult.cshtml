@@ -1,0 +1,59 @@
+﻿@model RaceDay.Mvc.ViewModels.CaptureResultVm
+@{
+    ViewData["Title"] = "Capture Result";
+}
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">Capture Race Result</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <p><strong>Participant:</strong> @Model.ParticipantName</p>
+                        <p><strong>Event:</strong> @Model.EventName</p>
+                        <p><strong>Category:</strong> @Model.CategoryName</p>
+                    </div>
+                    <hr />
+
+                    <form asp-controller="Organiser" asp-action="CaptureResult" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="EnrolmentID" />
+                        <input type="hidden" asp-for="ParticipantName" />
+                        <input type="hidden" asp-for="EventName" />
+                        <input type="hidden" asp-for="CategoryName" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="FinishTime" class="form-label"></label>
+                            <input asp-for="FinishTime" type="text" class="form-control" placeholder="00:48:35"
+                                   value="@(Model.FinishTime == TimeSpan.Zero ? "" : Model.FinishTime.ToString(@"hh\:mm\:ss"))" />
+                            <small class="text-muted">Example: 00:48:35</small>
+                            <span asp-validation-for="FinishTime" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="FinishPosition" class="form-label"></label>
+                            <input asp-for="FinishPosition" type="number" min="1" class="form-control" />
+                            <span asp-validation-for="FinishPosition" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">Save Result</button>
+                            <a asp-action="Enrolments" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

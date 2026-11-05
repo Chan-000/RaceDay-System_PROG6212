@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
 using RaceDay.Contracts;
 using RaceDay.API.Models;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace RaceDay.API.Controllers
 {
@@ -28,14 +29,23 @@ namespace RaceDay.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateResult(CreateResultRequest request)
         {
-            if (HttpContext.Session.GetInt32("UserID") == null)
+            var userId = HttpContext.Session.GetInt32("UserID");
+
+            if (userId == null)
                 return Unauthorized("Please log in first.");
 
             if (!IsOrganiser())
                 return StatusCode(403, "You do not have permission to perform this action.");
 
-            if (request.FinishTime < TimeSpan.Zero)
-                return BadRequest("Finish time cannot be negative");
+            if (request.FinishTime == null || request.FinishTime <= TimeSpan.Zero)
+            {
+                return BadRequest("Finish time must be greater than zero.");
+            }
+
+            if (request.FinishPosition == null || request.FinishPosition < 1)
+            {
+                return BadRequest("Finishing position must be at least 1.");
+            }
 
             var enrolment = await _context.Enrolments
                 .Include(e => e.Event)
@@ -44,17 +54,22 @@ namespace RaceDay.API.Controllers
             if (enrolment == null)
                 return NotFound("Enrolment not found.");
 
-            var userId = HttpContext.Session.GetInt32("UserID")!.Value;
-
-            if (enrolment.Event?.OrganiserID != userId)
-                return StatusCode(403, "You do not have permission to perform this action.");
+            if (enrolment.Event?.OrganiserID != userId.Value)
+            {
+                return BadRequest("You do not have permission to record a result for this event.");
+            }
 
             if (enrolment.EnrolmentStatus != "Confirmed")
+            {
                 return BadRequest("A result can only be recorded for a confirmed enrolment.");
+            }
 
-            if (await _context.Results.AnyAsync(
-                r => r.EnrolmentID == request.EnrolmentID))
-                return Conflict("A result already exists for this enrolment");
+            bool resultExists = await _context.Results.AnyAsync(r => r.EnrolmentID == request.EnrolmentID);
+
+            if (resultExists)
+            {
+                return Conflict("A result already exists for this enrolment.");
+            }
 
             var result = new Result
             {
@@ -74,10 +89,28 @@ namespace RaceDay.API.Controllers
         public async Task<IActionResult> UpdateResult(int id, CreateResultRequest request)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
-            var role = HttpContext.Session.GetString("Role");
 
-            if (userId == null || role != "Organiser")
-                return Unauthorized();
+            if (userId == null)
+                return Unauthorized("Please log in first");
+
+            if (!IsOrganiser())
+            {
+                return StatusCode(403, "You do not have permission to perform this action.");
+            }
+
+            if (request.FinishTime == null ||
+                request.FinishTime <= TimeSpan.Zero)
+            {
+                return BadRequest(
+                    "Finish time must be greater than zero.");
+            }
+
+            if (request.FinishPosition == null ||
+                request.FinishPosition < 1)
+            {
+                return BadRequest(
+                    "Finishing position must be at least 1.");
+            }
 
             var result = await _context.Results
                 .Include(r => r.Enrolment!)
@@ -90,8 +123,10 @@ namespace RaceDay.API.Controllers
             if (result.Enrolment?.Event?.OrganiserID != userId)
                 return StatusCode(403, "You do not have permission to perform this action.");
 
-            if (request.FinishTime < TimeSpan.Zero)
-                return BadRequest("Finish time cannot be negative.");
+            if (result.EnrolmentID != request.EnrolmentID)
+            {
+                return BadRequest("The result must remain to its orginal enrolment.");
+            }
 
             result.FinishTime = request.FinishTime;
             result.FinishPosition = request.FinishPosition;
@@ -114,11 +149,25 @@ namespace RaceDay.API.Controllers
                 return StatusCode(403, "You do not have permission to perform this action.");
 
             var results = await _context.Results
-                .Where(r => r.Enrolment != null &&  r.Enrolment.ParticipantID == userId)
+                .Where(r => r.Enrolment != null && r.Enrolment.ParticipantID == userId.Value)
                 .Select(r => new ResultDto
                 {
                     ResultID = r.ResultID,
                     EnrolmentID = r.EnrolmentID,
+                    ParticipantID = userId.Value,
+
+                    ParticipantName = r.Enrolment != null && r.Enrolment.Participant != null
+                        ? r.Enrolment.Participant.FirstName + " " + r.Enrolment.Participant.LastName
+                        : null,
+                    EventID = r.Enrolment != null ? r.Enrolment.EventID : 0,
+
+                    EventName = r.Enrolment != null && r.Enrolment.Event != null
+                        ? r.Enrolment.Event.EventName
+                        : null,
+
+                    CategoryName = r.Enrolment != null && r.Enrolment.Category != null
+                        ? r.Enrolment.Category.CategoryName
+                        : null,
                     FinishTime = r.FinishTime,
                     FinishPosition = r.FinishPosition
                 })
@@ -127,15 +176,70 @@ namespace RaceDay.API.Controllers
             return Ok(results);
         }
 
+        // GET: api/results/{id} - for Organiser edit screen
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetResult(int id)
+        {
+            var result = await _context.Results
+                .Where(r => r.ResultID == id)
+                .Select(r => new ResultDto
+                {
+                    ResultID = r.ResultID,
+                    EnrolmentID = r.EnrolmentID,
+                    ParticipantID = r.Enrolment != null ? r.Enrolment.ParticipantID : 0,
+
+                    ParticipantName = r.Enrolment != null && r.Enrolment.Participant != null
+                        ? r.Enrolment.Participant.FirstName + " " + r.Enrolment.Participant.LastName
+                        : null,
+                    EventID = r.Enrolment != null ? r.Enrolment.EventID : 0,
+
+                    EventName = r.Enrolment != null && r.Enrolment.Event != null
+                        ? r.Enrolment.Event.EventName
+                        : null,
+
+                    CategoryName = r.Enrolment != null && r.Enrolment.Category != null
+                        ? r.Enrolment.Category.CategoryName
+                        : null,
+                    FinishTime = r.FinishTime,
+                    FinishPosition = r.FinishPosition
+                })
+                .SingleOrDefaultAsync();
+
+            if (result == null) return NotFound("Result not found.");
+            return Ok(result);
+        }
+
+
         // GET: api/results/event/{eventId}
         [HttpGet("event/{eventId}")]
         public async Task<IActionResult> GetResultsByEvent(int eventId)
         {
             var results = await _context.Results
-                .Include(r => r.Enrolment!)
-                    .ThenInclude(e => e.Participant)
-                    .Where(r => r.Enrolment != null && r.Enrolment.EventID == eventId)
-                    .ToListAsync();
+                .Where(r => r.Enrolment != null && r.Enrolment.EventID == eventId)
+                .Select(r => new ResultDto
+                {
+                    ResultID = r.ResultID,
+                    EnrolmentID = r.EnrolmentID,
+                    ParticipantID = r.Enrolment != null ? r.Enrolment.ParticipantID : 0,
+
+                    ParticipantName = r.Enrolment != null && r.Enrolment.Participant != null
+                        ? r.Enrolment.Participant.FirstName + " " + r.Enrolment.Participant.LastName
+                        : null,
+                    EventID = r.Enrolment != null ? r.Enrolment.EventID : 0,
+
+                    EventName = r.Enrolment != null && r.Enrolment.Event != null
+                        ? r.Enrolment.Event.EventName
+                        : null,
+
+                    CategoryName = r.Enrolment != null && r.Enrolment.Category != null
+                        ? r.Enrolment.Category.CategoryName
+                        : null,
+                    FinishTime = r.FinishTime,
+                    FinishPosition = r.FinishPosition,
+
+                })
+                .OrderBy(r => r.FinishPosition)
+                .ToListAsync();
 
             return Ok(results);
         }

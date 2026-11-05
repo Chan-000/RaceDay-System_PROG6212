@@ -12,6 +12,15 @@
 			<p class="text-muted">View participants enrolled in your events.</p>
 		</div>
 	</div>
+	@if (TempData["Success"] != null)
+	{
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			@TempData["Success"]
+
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+		</div>
+	}
 
 	@if (TempData["Error"] != null)
 	{
@@ -54,6 +63,7 @@
 										<th>Selected Category</th>
 										<th>Enrolment Date</th>
 										<th>Status</th>
+										<th>Result</th>
 									</tr>
 								</thead>
 
@@ -84,6 +94,31 @@
 												else
 												{
 													<span class="badge bg-secondary">@item.EnrolmentStatus</span>
+												}
+											</td>
+											<td>
+												@if (item.EnrolmentStatus != "Confirmed")
+												{
+													<span class="text-muted">Not eligible</span>
+												}
+												else if (item.ResultID == null)
+												{
+													<a asp-controller="Organiser" 
+													   asp-action="CaptureResult"
+													   asp-route-eventId="@eventItem.EventID"
+													   asp-route-enrolmentId="@item.EnrolmentID"
+													   class="btn btn-sm btn-success">
+													    Capture Result
+													</a>
+												}
+												else
+												{
+													<a asp-controller="Organiser" 
+													   asp-action="EditResult"
+													   asp-route-id="@item.ResultID"
+													   class="btn btn-sm btn-primary">
+														Edit Result
+													</a>
 												}
 											</td>
 										</tr>

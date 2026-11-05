@@ -458,5 +458,250 @@ namespace RaceDay.Mvc.Controllers
 
             return View(result);
         }
+
+        //====Results====
+        [HttpGet]
+        public async Task<IActionResult> CaptureResult( int eventId, int enrolmentId)
+        {
+            var accessResult = CheckOrganiserAccess();
+
+            if (accessResult != null)
+                return accessResult;
+
+            using var response = await _api.SendAsync(HttpMethod.Get, "api/enrolments/events/" + eventId + "/enrolments");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Could not load the event enrolments.";
+                return RedirectToAction("Enrolments");
+            }
+
+            var enrolments = await _api.ReadAsync<List<EnrolmentDto>>(response) ?? new List<EnrolmentDto>();
+
+            var enrolment = enrolments.FirstOrDefault(e => e.EnrolmentID == enrolmentId);
+
+            if (enrolment == null)
+                return NotFound("Enrolment not found.");
+
+            if (enrolment.EnrolmentStatus != "Confirmed")
+            {
+                TempData["Error"] =
+                    "A result can only be recorded for a confirmed enrolment.";
+
+                return RedirectToAction("Enrolments");
+            }
+
+            if (enrolment.ResultID != null)
+            {
+                TempData["Error"] =
+                    "A result already exists. Use Edit Result instead.";
+
+                return RedirectToAction("Enrolments");
+            }
+
+            var model = new CaptureResultVm
+            {
+                EnrolmentID = enrolment.EnrolmentID,
+                ParticipantName = enrolment.ParticipantName ?? "Unknown participant",
+                EventName = enrolment.EventName ?? "Unknown event",
+                CategoryName = enrolment.CategoryName ?? "Unknown category",
+                FinishTime = TimeSpan.Zero,
+                FinishPosition = 1
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CaptureResult(CaptureResultVm model)
+        {
+            var accessResult = CheckOrganiserAccess();
+
+            if (accessResult != null)
+                return accessResult;
+
+            if (model.FinishTime <= TimeSpan.Zero)
+            {
+                ModelState.AddModelError("FinishTime", "Finish time must be greater than zero.");
+            }
+
+            if (model.FinishPosition < 1)
+            {
+                ModelState.AddModelError("FinishPosition", "Finishing position must be at least 1.");
+            }
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var request = new CreateResultRequest
+            {
+                EnrolmentID = model.EnrolmentID,
+                FinishTime = model.FinishTime,
+                FinishPosition = model.FinishPosition
+            };
+
+            using var response = await _api.SendAsync(HttpMethod.Post, "api/results", request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string error = await response.Content.ReadAsStringAsync();
+
+                ModelState.AddModelError(string.Empty, "Could not save the result. " + error);
+
+                return View(model);
+            }
+
+            TempData["Success"] = "The participant's result was successfully recorded.";
+
+            return RedirectToAction("Enrolments");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditResult(int id)
+        {
+            var accessResult = CheckOrganiserAccess();
+
+            if (accessResult != null)
+                return accessResult;
+
+            using var response = await _api.SendAsync(
+                HttpMethod.Get,
+                "api/results/" + id);
+
+            if (!response.IsSuccessStatusCode)
+                return NotFound("Result not found.");
+
+            var result = await _api.ReadAsync<ResultDto>(response);
+
+            if (result == null)
+                return NotFound("Result not found.");
+
+            var model = new CaptureResultVm
+            {
+                EnrolmentID = result.EnrolmentID,
+                ParticipantName = result.ParticipantName ?? "Unknown participant",
+                EventName = result.EventName ?? "Unknown event",
+                CategoryName = result.CategoryName ?? "Unknown category",
+                FinishTime = result.FinishTime ?? TimeSpan.Zero,
+                FinishPosition = result.FinishPosition ?? 1
+            };
+
+            ViewBag.ResultID = result.ResultID;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditResult(int id, CaptureResultVm model)
+        {
+            var accessResult = CheckOrganiserAccess();
+
+            if (accessResult != null)
+                return accessResult;
+
+            if (model.FinishTime <= TimeSpan.Zero)
+            {
+                ModelState.AddModelError(
+                    "FinishTime",
+                    "Finish time must be greater than zero.");
+            }
+
+            if (model.FinishPosition < 1)
+            {
+                ModelState.AddModelError(
+                    "FinishingPosition",
+                    "Finishing position must be at least 1.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ResultID = id;
+                return View(model);
+            }
+
+            var request = new CreateResultRequest
+            {
+                EnrolmentID = model.EnrolmentID,
+                FinishTime = model.FinishTime,
+                FinishPosition = model.FinishPosition
+            };
+
+            using var response = await _api.SendAsync(
+                HttpMethod.Put,
+                "api/results/" + id,
+                request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string error = await response.Content.ReadAsStringAsync();
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Could not update the result. " + error);
+
+                ViewBag.ResultID = id;
+                return View(model);
+            }
+
+            TempData["Success"] = "Result successfully updated.";
+
+            return RedirectToAction("Results");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Results()
+        {
+            var accessResult = CheckOrganiserAccess();
+
+            if (accessResult != null)
+                return accessResult;
+
+            using var eventsResponse = await _api.SendAsync(HttpMethod.Get, "api/events/mine");
+            if (!eventsResponse.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Could not load your events.";
+
+                return View(new List<EventResultsVm>());
+            }
+
+            var events = await _api.ReadAsync<List<EventDto>>(eventsResponse) ?? new List<EventDto>();
+
+            var result = new List<EventResultsVm>();
+
+            int totalCaptured = 0;
+            int totalEnrolments = 0;
+
+            foreach (var eventItem in events)
+            {
+                using var resultsResponse = await _api.SendAsync(HttpMethod.Get, "api/results/event/" + eventItem.EventID);
+                var results = new List<ResultDto>();
+                if (resultsResponse.IsSuccessStatusCode)
+                    results = await _api.ReadAsync<List<ResultDto>>(resultsResponse) ?? new List<ResultDto>();
+
+                using var enrolResponse = await _api.SendAsync(HttpMethod.Get, $"api/enrolments/events/{eventItem.EventID}/enrolments");
+                if (enrolResponse.IsSuccessStatusCode)
+                {
+                    var enrols = await _api.ReadAsync<List<EnrolmentDto>>(enrolResponse) ?? new List<EnrolmentDto>();
+                    totalEnrolments += enrols.Count(e => e.EnrolmentStatus == "Confirmed");
+                }
+
+                totalCaptured += results.Count;
+
+                result.Add(new EventResultsVm
+                {
+                    EventID = eventItem.EventID,
+                    EventName = eventItem.EventName,
+                    Results = results
+                });
+            }
+
+            ViewBag.Captured = totalCaptured;
+            ViewBag.Awaiting = totalEnrolments - totalCaptured < 0 ? 0 : totalEnrolments - totalCaptured;
+
+            return View(result);
+        }
+
     }
 }

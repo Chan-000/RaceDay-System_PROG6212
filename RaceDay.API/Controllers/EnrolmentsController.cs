@@ -141,7 +141,12 @@ namespace RaceDay.API.Controllers
                     CategoryID = e.CategoryID,
                     CategoryName = e.Category != null ? e.Category.CategoryName : null,
                     EnrolmentDate = e.EnrolmentDate,
-                    EnrolmentStatus = e.EnrolmentStatus
+                    EnrolmentStatus = e.EnrolmentStatus,
+
+                    ResultID = _context.Results
+                        .Where(r => r.EnrolmentID == e.EnrolmentID)
+                        .Select(r => (int?)r.ResultID)
+                        .FirstOrDefault()
                 })
                 .ToListAsync();
 
