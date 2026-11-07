@@ -164,6 +164,9 @@ namespace RaceDay.API.Controllers
                     EventName = r.Enrolment != null && r.Enrolment.Event != null
                         ? r.Enrolment.Event.EventName
                         : null,
+                    EventDate = r.Enrolment != null && r.Enrolment.Event != null
+                        ? r.Enrolment.Event.EventDate
+                        : null,
 
                     CategoryName = r.Enrolment != null && r.Enrolment.Category != null
                         ? r.Enrolment.Category.CategoryName
@@ -195,6 +198,9 @@ namespace RaceDay.API.Controllers
 
                     EventName = r.Enrolment != null && r.Enrolment.Event != null
                         ? r.Enrolment.Event.EventName
+                        : null,
+                    EventDate = r.Enrolment != null && r.Enrolment.Event != null
+                        ? r.Enrolment.Event.EventDate
                         : null,
 
                     CategoryName = r.Enrolment != null && r.Enrolment.Category != null
@@ -230,7 +236,9 @@ namespace RaceDay.API.Controllers
                     EventName = r.Enrolment != null && r.Enrolment.Event != null
                         ? r.Enrolment.Event.EventName
                         : null,
-
+                    EventDate = r.Enrolment != null && r.Enrolment.Event != null
+                        ? r.Enrolment.Event.EventDate
+                        : null,
                     CategoryName = r.Enrolment != null && r.Enrolment.Category != null
                         ? r.Enrolment.Category.CategoryName
                         : null,

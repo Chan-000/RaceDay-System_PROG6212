@@ -168,6 +168,7 @@ namespace RaceDay.Contracts
         public string? ParticipantName { get; set; }
         public int EventID { get; set; }
         public string? EventName { get; set; }
+        public DateTime? EventDate { get; set; }
         public string? CategoryName { get; set; }
         public TimeSpan? FinishTime { get; set; }
         public int? FinishPosition { get; set; }
