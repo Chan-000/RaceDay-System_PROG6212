@@ -192,5 +192,24 @@ namespace RaceDay.Mvc.Controllers
             return View(enrolments);
         }
 
+        //my results
+        [HttpGet]
+        public async Task<IActionResult> MyResults()
+        {
+            var accessResult = CheckParticipantAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            var response = await _api.SendAsync(HttpMethod.Get, "api/results/me");
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Unable to load your results. Please try again.";
+                return View(new List<ResultDto>());
+            }
+
+            var results = await _api.ReadAsync<List<ResultDto>>(response) ?? new List<ResultDto>();
+
+            return View(results);
+        }
     }
 }

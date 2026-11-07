@@ -1,0 +1,74 @@
+﻿@model List<RaceDay.Contracts.ResultDto>
+
+@{
+	ViewData["Title"] = "My Results";
+}
+
+<div class="container mt-4 mb-5" style="max-width:800px">
+
+	<div class="mb-4">
+		<h2 class="fw-bold">My Results</h2>
+		<p class="text-muted">
+			View your finishing times and position for completed events.
+		</p>
+	</div>
+
+	@if (Model == null || !Model.Any())
+	{
+		<div class="card shadow-sm">
+			<div class="card-body text-center py-5">
+				<h5>No results available yet</h5>
+				<p class="text-muted">
+					Your results will appear here once they have been recorded for your events.
+				</p>
+
+				<a asp-controller="Participant" asp-action="MyEvents" class="btn btn-primary">View My Events</a>
+			</div>
+		</div>
+	}
+	else
+	{
+		@foreach (var result in Model.OrderByDescending(r => r.EventDate))
+		{
+			<div class="card shadow-sm m-4">
+				<div class="card-body p-4"> 
+
+					<div class="d-flex justify-content-between align-items-start">
+						<h5 class="fw-bold mb-1">@(result.EventName ?? "Event name unavailable")</h5>
+						<span class="badge bg-success">Completed</span>
+					</div>
+
+					<p class="text-muted small mb-4">
+						@(result.EventDate.HasValue ? result.EventDate.Value.ToString("dd MMM yyyy"): "Date unavailable")
+					</p>
+
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Result information</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr>
+								<td>Category</td>
+								<td>@(result.CategoryName ?? "Not available")</td>
+							</tr>
+							<tr>
+								<td>Finish time</td>
+								<td>@(result.FinishTime.HasValue ? result.FinishTime.Value.ToString(@"hh\:mm\:ss") : "Not recorded")</td>
+							</tr>
+							<tr>
+								<td>Finishing position</td>
+								<td>@(result.FinishPosition.HasValue ? result.FinishPosition.Value.ToString() : "Not recorded")</td>
+							</tr>
+						</tbody>
+					</table>
+					
+				</div>
+			</div>
+			
+		}
+	}
+</div>
