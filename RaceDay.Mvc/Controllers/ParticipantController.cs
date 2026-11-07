@@ -136,6 +136,7 @@ namespace RaceDay.Mvc.Controllers
             return View(model);
         }
 
+        //enrols in an event
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnterEvent(int eventId, int categoryId)
@@ -172,13 +173,20 @@ namespace RaceDay.Mvc.Controllers
             return RedirectToAction(nameof(Details), new { id = eventId });
         }
 
+        //my events
         [HttpGet]
         public async Task<IActionResult> MyEvents()
         {
-            var access = CheckParticipantAccess();
-            if (access != null) return access;
+            var accessResult = CheckParticipantAccess();
+            if (accessResult != null)
+                return accessResult;
 
             var response = await _api.SendAsync(HttpMethod.Get, "api/enrolments/me");
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Unable to load your events. Please try again.";
+                return View(new List<EnrolmentDto>());
+            }
             var enrolments = await _api.ReadAsync<List<EnrolmentDto>>(response) ?? new List<EnrolmentDto>();
 
             return View(enrolments);
