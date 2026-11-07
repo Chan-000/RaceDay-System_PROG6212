@@ -1,0 +1,165 @@
+﻿@model RaceDay.Contracts.ProfileDto
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-4 mb-5">
+
+    <div class="mb-4">
+        <h2>My Profile</h2>
+        <p class="text-muted">
+            View and update your personal account information.
+        </p>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-4">
+
+                    <div class="mb-3">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex
+                            align-items-center justify-content-center"
+                             style="width: 90px; height: 90px; font-size: 32px;">
+                            @Model.FirstName.Substring(0, 1).ToUpper()
+                        </div>
+                    </div>
+
+                    <h4>@Model.FirstName @Model.LastName</h4>
+
+                    <p class="text-muted mb-2">@Model.Email</p>
+
+                    <span class="badge bg-primary">
+                        @Model.Role
+                    </span>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Personal Information</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form asp-controller="Participant"
+                          asp-action="Profile"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">First Name</label>
+
+                            <input name="FirstName"
+                                   value="@Model.FirstName"
+                                   class="form-control"
+                                   maxlength="50"
+                                   required />
+
+                            <span class="text-danger"
+                                  asp-validation-for="FirstName">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Last Name</label>
+
+                            <input name="LastName"
+                                   value="@Model.LastName"
+                                   class="form-control"
+                                   maxlength="50"
+                                   required />
+
+                            <span class="text-danger"
+                                  asp-validation-for="LastName">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+
+                            <input type="email"
+                                   value="@Model.Email"
+                                   class="form-control"
+                                   readonly />
+
+                            <small class="text-muted">
+                                Your registered email address cannot be changed here.
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+
+                            <input type="tel"
+                                   name="PhoneNumber"
+                                   value="@Model.PhoneNumber"
+                                   class="form-control"
+                                   maxlength="20" />
+
+                            <span class="text-danger"
+                                  asp-validation-for="PhoneNumber">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Account Role</label>
+
+                            <input value="@Model.Role"
+                                   class="form-control"
+                                   readonly />
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+
+                            <a asp-controller="Participant"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary">
+                                Back to Events
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                Save Changes
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -2,6 +2,7 @@
 using RaceDay.Contracts;
 using RaceDay.Mvc.Services;
 using RaceDay.Mvc.ViewModels;
+using static System.Net.WebRequestMethods;
 
 namespace RaceDay.Mvc.Controllers
 {
@@ -22,7 +23,7 @@ namespace RaceDay.Mvc.Controllers
         private bool IsParticipant()
         {
             return string.Equals(
-                HttpContext.Session.GetString("Role"), 
+                HttpContext.Session.GetString("Role"),
                 "Participant", StringComparison.OrdinalIgnoreCase);
         }
 
@@ -73,8 +74,8 @@ namespace RaceDay.Mvc.Controllers
 
             if (!string.IsNullOrWhiteSpace(type))
             {
-                filteredEvents = filteredEvents.Where(e => 
-                        string.Equals(e.EventTypeName, type, StringComparison.OrdinalIgnoreCase ));
+                filteredEvents = filteredEvents.Where(e =>
+                        string.Equals(e.EventTypeName, type, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -148,7 +149,7 @@ namespace RaceDay.Mvc.Controllers
             if (categoryId <= 0)
             {
                 TempData["Error"] = "Please select a category before entering.";
-                return RedirectToAction(nameof(Details), new {id = eventId});
+                return RedirectToAction(nameof(Details), new { id = eventId });
             }
 
             var request = new CreateEnrolmentRequest
@@ -210,6 +211,91 @@ namespace RaceDay.Mvc.Controllers
             var results = await _api.ReadAsync<List<ResultDto>>(response) ?? new List<ResultDto>();
 
             return View(results);
+        }
+
+        //profile
+        public async Task<IActionResult> Profile()
+        {
+            var accessResult = CheckParticipantAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            var response = await _api.SendAsync(HttpMethod.Get, "api/users/me");
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Unable to load your profile. Please try again.";
+                return RedirectToAction("Index");
+            }
+
+            var profile = await _api.ReadAsync<ProfileDto>(response);
+
+            if (profile == null)
+            {
+                TempData["Error"] = "Your profile could not be found.";
+                return RedirectToAction("Index");
+            }
+
+            return View(profile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(UpdateProfileRequest request)
+        {
+            var accessResult = CheckParticipantAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            if (!ModelState.IsValid)
+            {
+                var profileResponse = await _api.SendAsync(HttpMethod.Get, "api/users/me");
+
+                if (profileResponse.IsSuccessStatusCode)
+                {
+                    var profile = await _api.ReadAsync<ProfileDto>(profileResponse);
+
+                    if (profile != null)
+                    {
+                        profile.FirstName = request.FirstName;
+                        profile.LastName = request.LastName;
+                        profile.PhoneNumber = request.PhoneNumber;
+
+                        return View(profile);
+                    }
+                }
+
+                TempData["Error"] = "Please check the information you entered.";
+                return RedirectToAction("Profile");
+            }
+
+            var response = await _api.SendAsync(HttpMethod.Put, "api/users/me", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Success"] = "Your profile has been updated successfully.";
+                return RedirectToAction("Profile");
+            }
+
+            var updatedProfileResponse = await _api.SendAsync(HttpMethod.Get, "api/users/me");
+
+            if (updatedProfileResponse.IsSuccessStatusCode)
+            {
+                var profile = await _api.ReadAsync<ProfileDto>(updatedProfileResponse);
+
+                if (profile != null)
+                {
+                    profile.FirstName = request.FirstName;
+                    profile.LastName = request.LastName;
+                    profile.PhoneNumber = request.PhoneNumber;
+
+                    ModelState.AddModelError("", "Your profile could not be updated. Please try again.");
+
+                    return View(profile);
+                }
+            }
+
+            TempData["Error"] = "Unable to update your profile. Please try again";
+            return RedirectToAction("Profile");
         }
     }
 }
