@@ -1,193 +1,192 @@
 ﻿@model List<RaceDay.Contracts.EventDto>
 
 @{
-    ViewData["Title"] = "Upcoming Events";
+	ViewData["Title"] = "Upcoming Events";
 
-    var eventTypes = ViewBag.EventTypes as List<string>
-                     ?? new List<string>();
+	var eventTypes = ViewBag.EventTypes as List<string> ?? new List<string>();
 
-    string selectedType = ViewBag.SelectedType as string ?? "";
-    string search = ViewBag.Search as string ?? "";
+	string selectedType = ViewBag.SelectedType as string ?? "";
+	string search = ViewBag.Search as string ?? "";
 }
 
 <div class="container py-4">
 
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["Error"]
-        </div>
-    }
+	@if (TempData["Success"] != null)
+	{
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			@TempData["Success"]
 
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["Success"]
-        </div>
-    }
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 
-    <div class="mb-4">
-        <h1 class="fw-bold">Upcoming Events</h1>
+		</div>
+	}
 
-        <p class="text-muted">
-            Welcome @ViewBag.DisplayName!
-            Explore upcoming races and find an event to join.
-        </p>
-    </div>
+	@if (TempData["Error"] != null)
+	{
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			@TempData["Error"]
 
-    <!-- Search and filter -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	}
 
-            <form method="get" asp-controller="Participant"
-                  asp-action="Index">
+	<div class="mb-4"> 
+		<h1 class="fw-bold">Upcoming Events</h1>
+		<p class="text-muted">
+			Hello @ViewBag.DisplayName! Explore upcoming races and find an event to join.
+		</p>
+	</div>
 
-                <div class="row g-3 align-items-end">
+	<div class="card shadow-sm border-0 mb-4">
+		<div class="card-body">
 
-                    <div class="col-md-5">
-                        <label for="search" class="form-label">
-                            Search events
-                        </label>
+			<form method="get" asp-controller="Participant" asp-action="Index">
 
-                        <input type="text"
-                               id="search"
-                               name="search"
-                               class="form-control"
-                               placeholder="Search by event name or location"
-                               value="@search" />
-                    </div>
+				<div class="row g-3 align-items-end">
 
-                    <div class="col-md-4">
-                        <label for="type" class="form-label">
-                            Event type
-                        </label>
+					<div class="col-md-5">
+						<label for="search" class="form-label">
+							Search events
+						</label>
 
-                        <select id="type" name="type"
-                                class="form-select">
+						<input type="text" 
+							   id="search" 
+							   name="search" 
+							   class="form-control" 
+							   placeholder="Search by event name or location" 
+							   value="@search"/>
+					</div>
 
-                            <option value="">All event types</option>
+					<div class="col-md-4">
+						<label for="type" class="form-label">
+							Event type
+						</label>
 
-                            @foreach (var eventType in eventTypes)
-                            {
-                                if (selectedType == eventType)
-                                {
-                                    <option value="@eventType" selected>
-                                        @eventType
-                                    </option>
-                                }
-                                else
-                                {
-                                    <option value="@eventType">
-                                        @eventType
-                                    </option>
-                                }
-                            }
-                        </select>
-                    </div>
+						<select id="type" name="type" class="form-select">
 
-                    <div class="col-md-3">
-                        <button type="submit"
-                                class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Search
-                        </button>
+							<option value="">All event types</option>
 
-                        <a asp-controller="Participant"
-                           asp-action="Index"
-                           class="btn btn-outline-secondary w-100 mt-2">
-                            Clear filters
-                        </a>
-                    </div>
+							@foreach (var eventType in eventTypes)
+							{
+								if (selectedType == eventType)
+								{
+									<option value="@eventType" selected>
+										@eventType
+									</option>
+								}
+								else
+								{
+									<option value="@eventType">
+										@eventType
+									</option>
+								}
+							}		
+						</select>	   
+					</div>
 
-                </div>
-            </form>
+					<div class="col-md-3">
+						<button type="submit" class="btn btn-primary w-100">
+							<i class="bi bi-search"></i>Search
+						</button>
 
-        </div>
-    </div>
+						<a asp-controller="Participant"
+						   asp-action="Index"
+						   class="btn btn-outline-secondary w-100 mt-2">
+							Clear filters
+						</a>
+					</div>
+			    </div>
+			</form>
 
-    <!-- Event results -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-semibold mb-0">Available Events</h4>
+		</div>
+	</div>
 
-        <span class="badge bg-primary">
-            @Model.Count event(s)
-        </span>
-    </div>
+	<div class="d-flex justify-content-between align-items-center mb-3">
+		<h4 class="fw-semibold mb-0">Available Events</h4>
 
-    @if (Model.Any())
-    {
-        <div class="row g-4">
+		<span class="badge bg-primary">
+			@Model.Count events(s)
+		</span>
+	</div>
 
-            @foreach (var eventItem in Model)
-            {
-                <div class="col-md-6 col-lg-4">
+	@if (Model.Any())
+	{
+		<div class="row g-4">
 
-                    <div class="card shadow-sm border-0 h-100">
+			@foreach (var eventItem in Model)
+			{
+				<div class="col-md-6 col-lg-4">
 
-                        <div class="card-body d-flex flex-column">
+					<div class="card shadow-sm border-0 h-100">
+						
+						<div class="card-body d-flex flex-column">
 
-                            <div class="mb-3">
-                                <span class="badge bg-primary">
-                                    @(eventItem.EventTypeName ?? "General")
-                                </span>
-                            </div>
+							<div class="mb-3">
+								<span class="badge bg-primary">
+									@(eventItem.EventTypeName ?? "General")
+								</span>
+							</div>
 
-                            <h5 class="card-title fw-bold">
-                                @eventItem.EventName
-                            </h5>
+							<h5 class="card-title fw-bold">
+								@eventItem.EventName
+							</h5>
 
-                            <p class="text-muted">
-                                @(eventItem.Description ?? "No description available.")
-                            </p>
+							<p class="text-muted">
+								@(eventItem.Description ?? "No description available.")
+							</p>
 
-                            <hr />
+							<hr />
 
-                            <p class="mb-2">
-                                <i class="bi bi-calendar-event"></i>
-                                <strong>Date:</strong>
-                                @eventItem.EventDate.ToString("dd MMM yyyy")
-                            </p>
+							<p class="mb-2">
+								<i class="bi bi-calendar-event"></i>
+								<strong>Date:</strong>
+								@eventItem.EventDate.ToString("dd MMM yyyy")
+							</p>
 
-                            <p class="mb-2">
-                                <i class="bi bi-geo-alt"></i>
-                                <strong>Location:</strong>
-                                @eventItem.Location
-                            </p>
+							<p class="mb-2">
+								<i class="bi bi-geo-alt"></i>
+								<strong>Location:</strong>
+								@eventItem.Location
+							</p>
 
-                            <p class="mb-2">
-                                <i class="bi bi-signpost"></i>
-                                <strong>Distance:</strong>
-                                @eventItem.DistanceKm km
-                            </p>
+							<p class="mb-2">
+								<i class="bi bi-signpost"></i>
+								<strong>Distance:</strong>
+								@eventItem.DistanceKm km
+							</p>
 
-                            <p class="mb-3">
-                                <i class="bi bi-people"></i>
-                                <strong>Maximum participants:</strong>
-                                @eventItem.MaxParticipants
-                            </p>
+							<p class="mb-3">
+								<i class="bi bi-people"></i>
+								<strong>Maximum participants:</strong>
+								@eventItem.MaxParticipants
+							</p>
 
-                            <div class="mt-auto">
-                                <span class="badge bg-success">
-                                    Upcoming
-                                </span>
-                            </div>
+							<div class="mt-auto">
+								<span class="badge bg-success">Upcoming</span>
 
-                        </div>
-                    </div>
+								<a asp-controller="Participant" 
+								   asp-action="Details" 
+								   asp-route-id="@eventItem.EventID" 
+								   class="btn btn-outline-primary btn-sm">
+								   View Details
+							   </a>
+							</div>
 
-                </div>
-            }
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	}
+	else
+	{
+		<div class="alert alert-info text-center py-4">
+			<h5>No upcoming events found.</h5>
 
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-info text-center py-4">
-            <h5>No upcoming events found.</h5>
-
-            <p class="mb-0">
-                Try changing your search or event-type filter.
-            </p>
-        </div>
-    }
+			<p class="mb-0">
+				Try changing your search or event-type filter
+			</p>
+		</div>
+	}
 
 </div>

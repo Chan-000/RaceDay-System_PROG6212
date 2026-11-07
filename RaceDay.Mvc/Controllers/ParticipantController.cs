@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaceDay.Contracts;
 using RaceDay.Mvc.Services;
+using RaceDay.Mvc.ViewModels;
 
 namespace RaceDay.Mvc.Controllers
 {
@@ -91,9 +92,97 @@ namespace RaceDay.Mvc.Controllers
                 .ToList();
 
             return View(upcomingEvents);
-
         }
 
+        //Event details
+        public async Task<IActionResult> Details(int id)
+        {
+            var accessResult = CheckParticipantAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            var eventResponse = await _api.SendAsync(HttpMethod.Get, "api/events/" + id);
+
+            if (!eventResponse.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "The selected event could not be found.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var eventItem = await _api.ReadAsync<EventDto>(eventResponse);
+
+            if (eventItem == null)
+            {
+                TempData["Error"] = "Unable to load event details.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var categoryResponse = await _api.SendAsync(HttpMethod.Get, "api/categories/events/" + id);
+
+            if (!categoryResponse.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Unable to load event categories.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var categories = await _api.ReadAsync<List<CategoryDto>>(categoryResponse) ?? new List<CategoryDto>();
+
+            var model = new ParticipantEventDetailsVm
+            {
+                Event = eventItem,
+                Categories = categories
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EnterEvent(int eventId, int categoryId)
+        {
+            var accessResult = CheckParticipantAccess();
+            if (accessResult != null)
+                return accessResult;
+
+            if (categoryId <= 0)
+            {
+                TempData["Error"] = "Please select a category before entering.";
+                return RedirectToAction(nameof(Details), new {id = eventId});
+            }
+
+            var request = new CreateEnrolmentRequest
+            {
+                CategoryID = categoryId
+            };
+
+            var response = await _api.SendAsync(HttpMethod.Post, "api/enrolments/events/" + eventId + "/enrolments", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Success"] = "You have successfully entered the event!.";
+                return RedirectToAction(nameof(MyEvents));
+            }
+
+            var errorMessage = await response.Content.ReadAsStringAsync();
+
+            TempData["Error"] = string.IsNullOrWhiteSpace(errorMessage)
+                ? "Your event entry could not be completed. Please try again."
+                : errorMessage;
+
+            return RedirectToAction(nameof(Details), new { id = eventId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MyEvents()
+        {
+            var access = CheckParticipantAccess();
+            if (access != null) return access;
+
+            var response = await _api.SendAsync(HttpMethod.Get, "api/enrolments/me");
+            var enrolments = await _api.ReadAsync<List<EnrolmentDto>>(response) ?? new List<EnrolmentDto>();
+
+            return View(enrolments);
+        }
 
     }
 }

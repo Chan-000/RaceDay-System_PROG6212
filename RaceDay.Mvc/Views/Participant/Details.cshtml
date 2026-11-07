@@ -1,0 +1,162 @@
+﻿@model RaceDay.Mvc.ViewModels.ParticipantEventDetailsVm
+
+@{
+    ViewData["Title"] = "Event Details";
+}
+
+<div class="container py-4">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="mb-4">
+        <a asp-controller="Participant"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Events
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+
+            <span class="badge bg-primary mb-3">@(Model.Event.EventTypeName ?? "General")</span>
+
+            <h1 class="fw-bold">@Model.Event.EventName</h1>
+
+            <p class="text-muted">
+                @(Model.Event.Description ?? "No description available.")
+            </p>
+
+            <hr />
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <strong>
+                        <i class="bi bi-calendar-event"></i> Event date
+                    </strong>
+                    <p>
+                        @Model.Event.EventDate.ToString("dd MMMM yyyy")
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <strong>
+                        <i class="bi bi-geo-alt"></i> Location
+                    </strong>
+                    <p>@Model.Event.Location</p>
+                </div>
+
+                <div class="col-md-6">
+                    <strong>
+                        <i class="bi bi-signpost"></i> Distance
+                    </strong>
+                    <p>@Model.Event.DistanceKm km</p>
+                </div>
+
+                <div class="col-md-6">
+                    <strong>
+                        <i class="bi bi-people"></i> Maximum participants
+                    </strong>
+                    <p>@Model.Event.MaxParticipants</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <h3 class="fw-bold">Event Categories</h3>
+        <p class="text-muted">
+            Select the category you want to enter.
+        </p>
+    </div>
+
+    @if (Model.Categories.Any())
+    {
+        <form asp-controller="Participant" asp-action="EnterEvent" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="eventId" value="@Model.Event.EventID" />
+
+            <div class="row g-3">
+
+                @foreach (var category in Model.Categories)
+                {
+                    <div class="col-md-6 col-lg-4">
+
+                        <label class="card shadow-sm h-100" style="cursor:pointer;">
+
+                            <div class="card-body">
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="categoryId"
+                                           value="@category.CategoryID"
+                                           required />
+
+                                    <span class="form-check-label fw-bold">
+                                        @category.CategoryName
+                                    </span>
+                                </div>
+
+                                <p class="mb-2">
+                                    <strong>Minimum age:</strong>
+                                    @category.AgeMin
+                                </p>
+
+                                <p class="mb-2">
+                                    <strong>Maximum age:</strong>
+                                    @category.AgeMax
+                                </p>
+
+                                <p class="mb-0">
+                                    <strong>Entry fee:</strong>
+                                    R @category.EntryFee.ToString("N2")
+                                </p>
+
+                            </div>
+                        </label>
+
+                    </div>
+                }
+
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="bi bi-check-circle"></i>
+                    Enter Event
+                </button>
+            </div>
+
+        </form>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No categories have been added to this event yet.
+            Please check again later.
+        </div>
+    }
+
+</div>

@@ -36,13 +36,13 @@ namespace RaceDay.API.Controllers
         [HttpGet("events/{eventId:int}")]
         public async Task<IActionResult> GetCategories(int eventId)
         {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null) return Unauthorized("Please log in first.");
+
             var exists = await _context.Events.AnyAsync(e => e.EventID == eventId);
             if (!exists)
                 return NotFound("Event not Found");
 
-            if (!await OwnsEvent(eventId))
-                return StatusCode(403, "You do not have permission to perform this action.");
-            
             var categories = await _context.Categories
                 .Where(c => c.EventID == eventId)
                 .ToListAsync();
