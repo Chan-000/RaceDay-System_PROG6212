@@ -49,6 +49,9 @@ namespace RaceDay.API.Data
                      .HasMaxLength(20) .IsRequired();
 
                 entity.Property(u => u.PhoneNumber).HasMaxLength(20);
+
+                entity.Property(u => u.ProfileImageUrl)
+                     .HasMaxLength(2048);
             });
 
             // EventTypes
@@ -99,6 +102,9 @@ namespace RaceDay.API.Data
                      .WithMany()
                      .HasForeignKey(e => e.OrganiserID)
                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.Property(e => e.BannerImageUrl)
+                    .HasMaxLength(2048);
             });
 
             //Categories

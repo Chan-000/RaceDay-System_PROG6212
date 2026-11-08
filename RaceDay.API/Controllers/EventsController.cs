@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using RaceDay.API.Data;
 using RaceDay.API.Models;
+using RaceDay.API.Services;
 using RaceDay.Contracts;
 
 namespace RaceDay.API.Controllers
@@ -40,6 +41,7 @@ namespace RaceDay.API.Controllers
                     Description = e.Description,
                     EventDate = e.EventDate,
                     Location = e.Location,
+                    BannerImageUrl = e.BannerImageUrl,
                     DistanceKm = e.DistanceKm,
                     MaxParticipants = e.MaxParticipants,
                     EventTypeID = e.EventTypeID,
@@ -65,6 +67,7 @@ namespace RaceDay.API.Controllers
                     Description = e.Description,
                     EventDate = e.EventDate,
                     Location = e.Location,
+                    BannerImageUrl = e.BannerImageUrl,
                     DistanceKm = e.DistanceKm,
                     MaxParticipants = e.MaxParticipants,
                     EventTypeID = e.EventTypeID,
@@ -97,6 +100,7 @@ namespace RaceDay.API.Controllers
                     Description = e.Description,
                     EventDate = e.EventDate,
                     Location = e.Location,
+                    BannerImageUrl = e.BannerImageUrl,
                     DistanceKm = e.DistanceKm,
                     MaxParticipants = e.MaxParticipants,
                     EventTypeID = e.EventTypeID,
@@ -170,6 +174,49 @@ namespace RaceDay.API.Controllers
             await _context.SaveChangesAsync();
             return Ok(item);
         }
+
+
+        [HttpPost("{id:int}/banner")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadEventBanner(
+            int id,
+            IFormFile file,
+            [FromServices] BlobStorageService blobStorage)
+        {
+            if (!IsOrganiser())
+                return Unauthorized("Only organisers can upload event banners.");
+
+            var item = await _context.Events.FindAsync(id);
+
+            if (item == null)
+                return NotFound("Event not found.");
+
+            var userId = HttpContext.Session.GetInt32("UserID")!.Value;
+
+            if (item.OrganiserID != userId)
+                return StatusCode(403, "You can only upload banners for your own events.");
+
+            try
+            {
+                var imageUrl = await blobStorage.UploadAsync(file, "event-banners");
+
+                item.BannerImageUrl = imageUrl;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new UploadResponse
+                {
+                    FileName = file.FileName,
+                    Url = imageUrl,
+                    Message = "Event banner uploaded successfully."
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         //DELETE: api/events/{id}
         [HttpDelete("{id}")]

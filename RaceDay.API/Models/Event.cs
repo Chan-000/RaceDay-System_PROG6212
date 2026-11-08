@@ -23,6 +23,9 @@ namespace RaceDay.API.Models
         [MaxLength(180)]
         public string Location { get; set; } = string.Empty;
 
+        [MaxLength(2048)]
+        public string? BannerImageUrl { get; set; }
+
         [Required]
         [Column(TypeName = "decimal(6,2)")]
         public decimal DistanceKm { get; set; }

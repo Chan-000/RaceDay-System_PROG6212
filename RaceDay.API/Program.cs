@@ -1,12 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
 using System.Text.Json.Serialization;
+using RaceDay.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Connect to the RaceDay SQL Server database
 builder.Services.AddDbContext<RaceDayDbContext>(options =>
       options.UseSqlServer(builder.Configuration.GetConnectionString("RaceDayConnection")));
+
+builder.Services.AddScoped<BlobStorageService>();
 
 // Add session support
 builder.Services.AddDistributedMemoryCache();

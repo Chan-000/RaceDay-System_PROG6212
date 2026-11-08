@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
+using RaceDay.API.Services;
 using RaceDay.Contracts;
 
 namespace RaceDay.API.Controllers
@@ -35,7 +36,8 @@ namespace RaceDay.API.Controllers
                     LastName = u.LastName,
                     Email = u.Email,
                     Role = u.Role,
-                    PhoneNumber = u.PhoneNumber
+                    PhoneNumber = u.PhoneNumber,
+                    ProfileImageUrl = u.ProfileImageUrl
                 })
                 .SingleOrDefaultAsync();
 
@@ -73,5 +75,44 @@ namespace RaceDay.API.Controllers
                 Message = "Profile updated successfully"
             });
         }
+
+
+        [HttpPost("me/profile-image")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadProfileImage(
+            IFormFile file,
+            [FromServices] BlobStorageService blobStorage)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+
+            if (userId == null)
+                return Unauthorized("Please log in first.");
+
+            var user = await _context.Users.FindAsync(userId.Value);
+
+            if (user == null)
+                return NotFound("User not found.");
+
+            try
+            {
+                var imageUrl = await blobStorage.UploadAsync(file, "profile-images");
+
+                user.ProfileImageUrl = imageUrl;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new UploadResponse
+                {
+                    FileName = file.FileName,
+                    Url = imageUrl,
+                    Message = "Profile image uploaded successfully."
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

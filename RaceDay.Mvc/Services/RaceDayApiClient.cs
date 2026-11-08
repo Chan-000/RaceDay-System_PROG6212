@@ -1,5 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
 
 namespace RaceDay.Mvc.Services
 {
@@ -46,6 +48,27 @@ namespace RaceDay.Mvc.Services
             {
                 request.Content = JsonContent.Create(body);
             }
+            return await client.SendAsync(request);
+        }
+
+        public async Task<HttpResponseMessage> UploadFileAsync(string url, IFormFile file)
+        {
+            var client = CreateClient();
+
+            using var request = CreateRequest(HttpMethod.Post, url);
+
+            using var multipartContent = new MultipartFormDataContent();
+
+            using var fileStream = file.OpenReadStream();
+
+            using var fileContent = new StreamContent(fileStream);
+
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+            multipartContent.Add(fileContent, "file", file.FileName);
+
+            request.Content = multipartContent;
+
             return await client.SendAsync(request);
         }
 

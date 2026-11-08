@@ -218,6 +218,42 @@ namespace RaceDay.Mvc.Controllers
             return RedirectToAction(nameof(Events));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadEventBanner(int id, IFormFile file)
+        {
+            var accessResult = CheckOrganiserAccess();
+
+            if (accessResult != null)
+                return accessResult;
+
+            if (file == null || file.Length == 0)
+            {
+                TempData["Error"] = "Please select an image to upload.";
+                return RedirectToAction(nameof(EditEvent), new { id });
+            }
+
+            if (file.Length > 5 * 1024 * 1024)
+            {
+                TempData["Error"] = "The image must not be larger than 5MB.";
+                return RedirectToAction(nameof(EditEvent), new { id });
+            }
+
+            using var response = await _api.UploadFileAsync("api/events/" + id + "/banner", file);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Success"] = "Event banner uploaded successfully!";
+                return RedirectToAction(nameof(EditEvent), new { id });
+            }
+
+            string errorMessage = await response.Content.ReadAsStringAsync();
+
+            TempData["Error"] = "Unable to upload the event banner. " + errorMessage;
+
+            return RedirectToAction(nameof(EditEvent), new { id });
+        }
+
         //delete event
         [HttpPost]
         [ValidateAntiForgeryToken]

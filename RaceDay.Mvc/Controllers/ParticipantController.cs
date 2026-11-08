@@ -297,5 +297,44 @@ namespace RaceDay.Mvc.Controllers
             TempData["Error"] = "Unable to update your profile. Please try again";
             return RedirectToAction("Profile");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadProfileImage(IFormFile file)
+        {
+            var accessResult = CheckParticipantAccess();
+
+            if (accessResult != null)
+                return accessResult;
+
+            if (file == null || file.Length == 0)
+            {
+                TempData["Error"] = "Please select an image to upload.";
+                return RedirectToAction(nameof(Profile));
+            }
+
+            if (file.Length > 5 * 1024 * 1024)
+            {
+                TempData["Error"] = "The image must not be larger than 5MB.";
+                return RedirectToAction(nameof(Profile));
+            }
+
+            using var response = await _api.UploadFileAsync(
+                "api/users/me/profile-image",
+                file
+            );
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Success"] = "Profile picture uploaded successfully!";
+                return RedirectToAction(nameof(Profile));
+            }
+
+            string errorMessage = await response.Content.ReadAsStringAsync();
+
+            TempData["Error"] = "Unable to upload your profile picture. " + errorMessage;
+
+            return RedirectToAction(nameof(Profile));
+        }
     }
 }

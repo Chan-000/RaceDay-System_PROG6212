@@ -50,6 +50,8 @@ namespace RaceDay.Contracts
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
+
+        public string? ProfileImageUrl { get; set; }
     }
 
     public class UpdateProfileRequest
@@ -97,6 +99,7 @@ namespace RaceDay.Contracts
         public int EventTypeID { get; set; }
         public string? EventTypeName { get; set; }
         public int OrganiserID { get; set; }
+        public string? BannerImageUrl { get; set; }
     }
 
     //Category DTOs
