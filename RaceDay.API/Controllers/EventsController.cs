@@ -217,6 +217,25 @@ namespace RaceDay.API.Controllers
             }
         }
 
+        [HttpGet("{id:int}/banner-image")]
+        public async Task<IActionResult> GetEventBanner( int id,
+            [FromServices] BlobStorageService blobStorage)
+        {
+            var item = await _context.Events.FindAsync(id);
+
+            if (item == null)
+                return NotFound("Event not found.");
+
+            if (string.IsNullOrWhiteSpace(item.BannerImageUrl))
+                return NotFound("This event does not have a banner image.");
+
+            var image = await blobStorage.DownloadAsync(item.BannerImageUrl);
+
+            if (image == null)
+                return NotFound("Banner image not found.");
+
+            return File(image.Value.Content, image.Value.ContentType);
+        }
 
         //DELETE: api/events/{id}
         [HttpDelete("{id}")]

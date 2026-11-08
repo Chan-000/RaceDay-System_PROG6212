@@ -114,5 +114,30 @@ namespace RaceDay.API.Controllers
             }
         }
 
+        [HttpGet("me/profile-image")]
+        public async Task<IActionResult> GetMyProfileImage(
+            [FromServices] BlobStorageService blobStorage)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+
+            if (userId == null)
+                return Unauthorized("Please log in first.");
+
+            var user = await _context.Users.FindAsync(userId.Value);
+
+            if (user == null)
+                return NotFound("User not found.");
+
+            if (string.IsNullOrWhiteSpace(user.ProfileImageUrl))
+                return NotFound("You have not uploaded a profile picture.");
+
+            var image = await blobStorage.DownloadAsync(user.ProfileImageUrl);
+
+            if (image == null)
+                return NotFound("Profile picture not found.");
+
+            return File(image.Value.Content, image.Value.ContentType);
+        }
+
     }
 }

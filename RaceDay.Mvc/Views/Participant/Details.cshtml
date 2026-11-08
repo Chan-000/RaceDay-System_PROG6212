@@ -33,6 +33,14 @@
         </a>
     </div>
 
+    @if (!string.IsNullOrWhiteSpace(Model.Event.BannerImageUrl))
+    {
+        <img src="@Url.Action("EventBanner", "Images", new { id = Model.Event.EventID })"
+             alt="@Model.Event.EventName banner"
+             class="img-fluid rounded mb-4"
+             style="width: 100%; max-height: 350px; object-fit: cover;" />
+    }
+
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body p-4">
 

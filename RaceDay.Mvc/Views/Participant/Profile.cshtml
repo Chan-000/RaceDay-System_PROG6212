@@ -39,11 +39,21 @@
                 <div class="card-body text-center py-4">
 
                     <div class="mb-3">
-                        <div class="rounded-circle bg-primary text-white d-inline-flex
-                             align-items-center justify-content-center"
-                             style="width: 90px; height: 90px; font-size: 32px;">
-                             @Model.FirstName.Substring(0, 1).ToUpper()
-                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.ProfileImageUrl))
+                        {
+                            <img src="@Url.Action("ProfilePicture", "Images")"
+                                 alt="Profile picture"
+                                 class="rounded-circle"
+                                 style="width: 120px; height: 120px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                 style="width: 120px; height: 120px; font-size: 35px; margin: 0 auto;">
+                                @Model.FirstName.Substring(0, 1)@Model.LastName.Substring(0, 1)
+                            </div>
+                        }
                     </div>
 
                     <h4>@Model.FirstName @Model.LastName</h4>

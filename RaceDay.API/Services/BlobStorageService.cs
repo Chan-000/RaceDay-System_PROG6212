@@ -85,5 +85,44 @@ namespace RaceDay.API.Services
 
             return blobClient.Uri.ToString();
         }
+
+        public async Task<(Stream Content, string ContentType)?> DownloadAsync(string blobUrl)
+        {
+            if (string.IsNullOrWhiteSpace(blobUrl))
+                return null;
+
+            if (!Uri.TryCreate(blobUrl, UriKind.Absolute, out Uri? uri))
+                return null;
+
+            string blobName = Uri.UnescapeDataString(
+                uri.AbsolutePath.TrimStart('/')
+            );
+
+            string containerPrefix = _containerClient.Name + "/";
+
+            if (blobName.StartsWith(
+                containerPrefix,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                blobName = blobName.Substring(containerPrefix.Length);
+            }
+
+            if (string.IsNullOrWhiteSpace(blobName))
+                return null;
+
+            BlobClient blobClient = _containerClient.GetBlobClient(blobName);
+
+            var exists = await blobClient.ExistsAsync();
+
+            if (!exists.Value)
+                return null;
+
+            var download = await blobClient.DownloadStreamingAsync();
+
+            return (
+                download.Value.Content,
+                download.Value.Details.ContentType ?? "application/octet-stream"
+            );
+        }
     }
 }
