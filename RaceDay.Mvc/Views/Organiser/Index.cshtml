@@ -1,64 +1,118 @@
 ﻿@{
-	ViewData["Title"] = "Organiser Dashboard";
+    ViewData["Title"] = "Organiser Dashboard";
 }
 
-<div class="container">
+<div class="organiser-dashboard">
 
-	<div class="mb-4">
-		<h1 class="fw-bold">Organiser Dashboard</h1>
-		<p class="text-muted">
-			Welcome @ViewBag.DisplayName. Manage your RaceDay activities here.
-		</p>
-	</div>
+    <!-- Dashboard introduction -->
+    <section class="organiser-welcome mb-4">
+        <div>
+            <span class="section-label">RACEDAY SA / ORGANISER</span>
 
-	<div class="row g-4">
+            <h1 class="fw-bold mt-2">Your Dashboard</h1>
 
-		<div class="col-md-6 col-lg-3">
-			<div class="card shadow-sm border-0 h-100">
-				<div class="card-body">
-					<h5 class="card-title">Manage Events</h5>
-					<p class="card-text text-muted">
-						Create, update and manage race events.
-					</p>
-					<span class="badge bg-primary">Coming soon</span>
-				</div>
-			</div>
-		</div>
+            <p class="text-muted mb-0">
+                Welcome, @ViewBag.DisplayName.
+                Manage your events and keep everything running smoothly.
+            </p>
+        </div>
 
-		<div class="col-md-6 col-lg-3">
-			<div class="card shadow-sm border-0 h-100">
-				<div class="card-body">
-					<h5 class="card-title">Categories</h5>
-					<p class="card-text text-muted">
-						Manage the categories available for your events.
-					</p>
-					<span class="badge bg-primary">Coming soon</span>
-				</div>
-			</div>
-		</div>
+        <div class="organiser-welcome-icon">
+            <span>🏅</span>
+        </div>
+    </section>
 
-		<div class="col-md-6 col-lg-3">
-			<div class="card shadow-sm border-0 h-100">
-				<div class="card-body">
-					<h5 class="card-title">Enrolments</h5>
-					<p class="card-text text-muted">
-						View and manage participant enrolments.
-					</p>
-					<span class="badge bg-warning text-dark">Coming soon</span>
-				</div>
-			</div>
-		</div>
+    <!-- Dashboard cards -->
+    <section class="row g-4">
 
-		<div class="col-md-6 col-lg-3">
-			<div class="card shadow-sm border-0 h-100">
-				<div class="card-body">
-					<h5 class="card-title">Results</h5>
-					<p class="card-text text-muted">
-						Enter and publish race results.
-					</p>
-					<span class="badge bg-success">Coming soon</span>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="col-md-6 col-lg-3">
+            <div class="organiser-card h-100">
+                <div class="organiser-card-icon">
+                    <span>🏃</span>
+                </div>
+
+                <h5>Manage Events</h5>
+
+                <p>
+                    Create, update and manage your sporting events.
+                </p>
+
+                <a asp-controller="Organiser"
+                   asp-action="Events"
+                   class="organiser-card-link">
+                    Manage events <span>→</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="organiser-card h-100">
+                <div class="organiser-card-icon">
+                    <span>🏷️</span>
+                </div>
+
+                <h5>Categories</h5>
+
+                <p>
+                    View and manage categories available for your events.
+                </p>
+
+                <span class="organiser-card-note">Category management</span>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="organiser-card h-100">
+                <div class="organiser-card-icon">
+                    <span>👥</span>
+                </div>
+
+                <h5>Enrolments</h5>
+
+                <p>
+                    View participant enrolments and manage registrations.
+                </p>
+
+                <a asp-controller="Organiser"
+                   asp-action="Enrolments"
+                   class="organiser-card-link">
+                    View enrolments <span>→</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="organiser-card h-100">
+                <div class="organiser-card-icon">
+                    <span>🏆</span>
+                </div>
+
+                <h5>Results</h5>
+
+                <p>
+                    Capture and update participants' race results.
+                </p>
+
+                <a asp-controller="Organiser"
+                   asp-action="Results"
+                   class="organiser-card-link">
+                    Manage results <span>→</span>
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Bottom information -->
+    <section class="organiser-dashboard-note mt-5">
+        <div>
+            <h5>Keep your events on track</h5>
+            <p class="mb-0">
+                Manage your event information, monitor enrolments
+                and keep participant results up to date.
+            </p>
+        </div>
+        <span class="dashboard-note-icon">✨</span>
+    </section>
+
 </div>

@@ -1,22 +1,619 @@
+
+/* ==== RACEDAY SA - COLOUR PALETTE ====*/
+
+:root {
+    --raceday-primary: #EB5D1E;
+    --raceday-button: #C94A12;
+    --raceday-secondary: #EF7F4D;
+    --raceday-navy: #343A40;
+    --raceday-text: #343A40;
+    --raceday-bg: #FFF9F5;
+    --raceday-white: #FFFFFF;
+    --raceday-border: #F1E4DC;
+    --raceday-soft-orange: #FFF1E8;
+}
+
+/* GENERAL PAGE STYLING*/
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    color: var(--raceday-text);
+    background-color: var(--raceday-bg);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Headings */
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--raceday-text);
+    font-weight: 600;
+}
+
+/* Links */
+
+a {
+    color: var(--raceday-primary);
+    text-decoration: none;
+}
+
+    a:hover {
+        color: var(--raceday-button);
+    }
+
+/*  BUTTONS */
+
+/* Main action buttons */
+
+.btn-primary {
+    background-color: var(--raceday-button);
+    border-color: var(--raceday-button);
+    color: var(--raceday-white);
+    font-weight: 600;
+}
+
+    .btn-primary:hover {
+        background-color: var(--raceday-primary);
+        border-color: var(--raceday-primary);
+        color: var(--raceday-white);
+    }
+
+/* Secondary buttons */
+
+.btn-secondary {
+    background-color: var(--raceday-navy);
+    border-color: var(--raceday-navy);
+    color: var(--raceday-white);
+}
+
+    .btn-secondary:hover {
+        background-color: var(--raceday-primary);
+        border-color: var(--raceday-primary);
+        color: var(--raceday-white);
+    }
+
+/* Outline buttons */
+
+.btn-outline-primary {
+    border-color: var(--raceday-primary);
+    color: var(--raceday-primary);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--raceday-primary);
+        border-color: var(--raceday-primary);
+        color: var(--raceday-white);
+    }
+
+.btn-outline-secondary {
+    border-color: var(--raceday-navy);
+    color: var(--raceday-navy);
+}
+
+    .btn-outline-secondary:hover {
+        background-color: var(--raceday-navy);
+        color: var(--raceday-white);
+    }
+
+/* Button focus */
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem var(--raceday-white), 0 0 0 0.25rem var(--raceday-primary);
+}
+
+
+/* CARDS AND CONTENT AREAS */
+
+.card {
+    background-color: var(--raceday-white);
+    border: 1px solid var(--raceday-border);
+    border-radius: 12px;
+}
+
+.card-header {
+    background-color: var(--raceday-soft-orange);
+    color: var(--raceday-text);
+}
+
+/* FORMS*/
+
+.form-control,
+.form-select {
+    background-color: var(--raceday-white);
+    border: 1px solid var(--raceday-border);
+    color: var(--raceday-text);
+}
+
+.form-label {
+    color: var(--raceday-text);
+    font-weight: 500;
+}
+
+/*TABLES*/
+
+.table {
+    color: var(--raceday-text);
+}
+
+    .table thead th {
+        background-color: var(--raceday-navy);
+        color: var(--raceday-white);
+    }
+
+/* HIGHLIGHTED SECTIONS*/
+
+.highlight-section {
+    background-color: var(--raceday-soft-orange);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* STATUS BADGES*/
+
+.status-confirmed {
+    background-color: #198754;
+    color: white;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #222222;
+}
+
+.status-cancelled {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* BOOTSTRAP OVERRIDES*/
+.btn-info {
+    background-color: var(--raceday-navy) !important;
+    border-color: var(--raceday-navy) !important;
+    color: white !important;
+}
+
+    .btn-info:hover {
+        background-color: var(--raceday-primary) !important;
+        border-color: var(--raceday-primary) !important;
+    }
+
+.badge.bg-primary, .badge.bg-info {
+    background-color: var(--raceday-soft-orange) !important;
+    color: var(--raceday-navy) !important;
+    border: 1px solid var(--raceday-border);
+}
+
+.table-dark, thead.table-dark th {
+    background-color: var(--raceday-navy) !important;
+    color: white !important;
+    border-color: var(--raceday-navy) !important;
+}
+
+/* =========================================
+   RACEDAY - LIGHT WEBSITE DESIGN
+========================================= */
+
+/* Light navigation */
+.raceday-navbar {
+    background-color: #FFFFFF !important;
+    border-bottom: 1px solid #F1E4DC;
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+    .raceday-navbar .brand-name {
+        color: #EB5D1E;
+        font-size: 1.7rem;
+        letter-spacing: -1px;
+    }
+
+    .raceday-navbar .brand-dot {
+        color: #EF7F4D;
+        font-size: 1.8rem;
+    }
+
+    .raceday-navbar .nav-link {
+        color: #343A40 !important;
+        font-weight: 500;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+        .raceday-navbar .nav-link:hover {
+            color: #EB5D1E !important;
+        }
+
+    .raceday-navbar .welcome-text {
+        color: #343A40;
+    }
+
+/* Home page */
+.home-page {
+    padding-top: 10px;
+}
+
+.home-hero {
+    background: linear-gradient(135deg, #FFF9F5, #FFF0E7);
+    border-radius: 24px;
+    padding: 55px 45px;
+    overflow: hidden;
+}
+
+.hero-label,
+.section-label {
+    color: #C94A12;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.hero-title {
+    color: #292929;
+    font-size: clamp(2.3rem, 5vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.12;
+    margin-top: 18px;
+}
+
+    .hero-title span {
+        color: #EB5D1E;
+    }
+
+.hero-description {
+    color: #555555;
+    font-size: 1.08rem;
+    line-height: 1.8;
+    max-width: 500px;
+    margin-top: 20px;
+}
+
+.hero-note {
+    color: #777777;
+    font-size: 0.9rem;
+}
+
+.hero-image-area {
+    min-height: 340px;
+    background: #FFE1D0;
+    border-radius: 22px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-image-decoration {
+    position: absolute;
+    top: 20px;
+    right: 22px;
+    display: flex;
+    gap: 8px;
+}
+
+    .hero-image-decoration span {
+        background: #FFFFFF;
+        color: #EB5D1E;
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 7px 10px;
+        border-radius: 20px;
+    }
+
+.hero-image-content {
+    text-align: center;
+    z-index: 1;
+}
+
+.hero-circle {
+    width: 190px;
+    height: 190px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    box-shadow: 0 12px 35px rgba(201, 74, 18, 0.12);
+}
+
+.hero-runner {
+    font-size: 6rem;
+}
+
+.hero-image-content p {
+    color: #8A3C1C;
+    font-weight: 600;
+}
+
+/* Introduction */
+.home-intro {
+    max-width: 720px;
+    margin: 75px auto 45px;
+}
+
+    .home-intro h2 {
+        color: #292929;
+        font-weight: 750;
+        margin-top: 12px;
+    }
+
+    .home-intro p {
+        color: #666666;
+        line-height: 1.8;
+        margin-top: 15px;
+    }
+
+/* Feature cards */
+.feature-card {
+    background: #FFFFFF;
+    border: 1px solid #F1E4DC;
+    border-radius: 16px;
+    padding: 28px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(80, 50, 30, 0.08);
+    }
+
+.feature-icon {
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFF0E7;
+    border-radius: 15px;
+    font-size: 1.7rem;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    color: #292929;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.feature-card p {
+    color: #666666;
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+/* Final call to action */
+.home-cta {
+    background: #EB5D1E;
+    color: #FFFFFF;
+    border-radius: 20px;
+    padding: 45px 20px;
+    margin-top: 65px;
+}
+
+    .home-cta h2 {
+        color: #FFFFFF;
+        font-weight: 750;
+    }
+
+    .home-cta p {
+        color: #FFFFFF;
+        opacity: 0.95;
+        margin-top: 12px;
+    }
+
+    .home-cta .btn-light {
+        color: #C94A12;
+        font-weight: 700;
+        border: none;
+        margin-top: 10px;
+    }
+
+        .home-cta .btn-light:hover {
+            background: #FFF0E7;
+            color: #A83D10;
+        }
+
+/* Light footer */
+.raceday-footer {
+    background-color: #FFF4ED;
+    color: #555555;
+    border-top: 1px solid #F1E4DC;
+    padding: 25px 0;
+}
+
+    .raceday-footer small {
+        display: block;
+        color: #888888;
+        margin-top: 5px;
+    }
+
+/* Smaller screens */
+@media (max-width: 767px) {
+    .home-hero {
+        padding: 35px 22px;
+    }
+
+    .hero-image-area {
+        min-height: 270px;
+    }
+
+    .hero-circle {
+        width: 150px;
+        height: 150px;
+    }
+
+    .hero-runner {
+        font-size: 4.5rem;
+    }
+
+    .home-intro {
+        margin-top: 50px;
+    }
+}
+
+
+/* =========================================
+   ORGANISER DASHBOARD
+========================================= */
+
+.organiser-dashboard {
+    padding-top: 10px;
+}
+
+.organiser-welcome {
+    background: #FFF4ED;
+    border-radius: 18px;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+    .organiser-welcome h1 {
+        color: #292929;
+        font-size: 2rem;
+    }
+
+.organiser-welcome-icon {
+    width: 75px;
+    height: 75px;
+    border-radius: 20px;
+    background: #FFE1D0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+}
+
+.organiser-card {
+    background: #FFFFFF;
+    border: 1px solid #F1E4DC;
+    border-radius: 16px;
+    padding: 25px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .organiser-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(80, 50, 30, 0.08);
+    }
+
+.organiser-card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: #FFF0E7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+}
+
+.organiser-card h5 {
+    color: #292929;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.organiser-card p {
+    color: #666666;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    min-height: 75px;
+}
+
+.organiser-card-link {
+    color: #C94A12;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+    .organiser-card-link:hover {
+        color: #EB5D1E;
+        text-decoration: underline;
+    }
+
+.organiser-card-note {
+    color: #888888;
+    font-size: 0.85rem;
+}
+
+.organiser-dashboard-note {
+    background: #FFF9F5;
+    border: 1px solid #F1E4DC;
+    border-radius: 16px;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .organiser-dashboard-note h5 {
+        color: #C94A12;
+        font-weight: 700;
+    }
+
+    .organiser-dashboard-note p {
+        color: #666666;
+    }
+
+.dashboard-note-icon {
+    font-size: 2rem;
+}
+
+/* =========================================
+   ENROLMENT EVENT HEADINGS
+========================================= */
+
+.enrolment-event-header {
+    background: #FFF0E7;
+    border-bottom: 1px solid #F1E4DC;
+    padding: 18px 22px;
+    border-radius: 12px 12px 0 0;
+}
+
+    .enrolment-event-header h5 {
+        color: #292929;
+        font-weight: 700;
+    }
+
+    .enrolment-event-header span {
+        display: block;
+        color: #C94A12;
+        font-size: 0.82rem;
+        margin-top: 5px;
+    }
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+    .organiser-welcome {
+        padding: 22px;
+    }
+
+    .organiser-welcome-icon {
+        width: 55px;
+        height: 55px;
+        font-size: 1.8rem;
+    }
+
+    .organiser-card p {
+        min-height: auto;
+    }
 }

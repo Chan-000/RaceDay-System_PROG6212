@@ -16,4 +16,8 @@
     <ProjectReference Include="..\RaceDay.Contracts\RaceDay.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

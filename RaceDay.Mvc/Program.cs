@@ -40,7 +40,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (!builder.Environment.IsDevelopment() || !builder.Environment.IsEnvironment("Docker"))
+{
+    app.UseHttpsRedirection();
+}
 app.UseStaticFiles();
 
 app.UseRouting();

@@ -20,10 +20,13 @@
 <body>
 
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <nav class="navbar navbar-expand-lg raceday-navbar">
             <div class="container">
 
-                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">RaceDay</a>
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                    <span class="brand-name">RaceDay</span>
+                    <span class="brand-dot">.</span>
+                </a>
 
                 <button class="navbar-toggler"
                         type="button"
@@ -85,22 +88,22 @@
 
                         </ul>
 
-                        <ul class="navbar-nav ms-auto">
+                        <ul class="navbar-nav ms-auto align-items-lg-center">
 
                             @if (userId == null)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a>     
+                                    <a class="nav-link  login-link" asp-controller="Auth" asp-action="Login">Login</a>     
                                 </li>
 
-                                <li class="nav-item">
-                                    <a class="btn btn-primary ms-lg-2" asp-controller="Auth" asp-action="Register">Register</a>
+                            <li class="nav-item ms-lg-2">
+                                    <a class="btn btn-primary register-button" asp-controller="Auth" asp-action="Register">Register</a>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-item">
-                                    <span class="navbar-text text-white me-3">Welcome, @displayName</span>
+                                    <span class="navbar-text welcome-text me-lg-3">Welcome, @displayName</span>
                                 </li>
 
                                 <li class="nav-item">
@@ -108,7 +111,7 @@
 
                                         @Html.AntiForgeryToken()
 
-                                        <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm">Logout</button>
                                     </form>
                                 </li>
                             }
@@ -123,11 +126,14 @@
         @RenderBody()
     </main>
 
-    <footer class="border-top text-muted py-3 mt-5">
+    <footer class="raceday-footer mt-5">
         <div class="container text-center">
-            © 2026 RaceDay. All rights reserved.
+            <p class="mb-0">
+                © 2026 RaceDay SA. All rights reserved.
+            </p>
+            <small>Find your race. Make it count.</small>
         </div>
-    </footer>
+    </footer >
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

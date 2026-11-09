@@ -1,8 +1,122 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="home-page">
+
+    <!-- Hero section -->
+    <section class="home-hero">
+        <div class="row align-items-center g-4">
+
+            <div class="col-lg-6">
+                <span class="hero-label">WELCOME TO RACEDAY SA</span>
+
+                <h1 class="hero-title">
+                    Your next race.
+                    <span> Your next achievement.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Discover sporting events, take part in exciting challenges
+                    and keep track of your race journey with RaceDay.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a asp-controller="Auth"
+                       asp-action="Register"
+                       class="btn btn-primary btn-lg">
+                        Get started
+                    </a>
+
+                    <a asp-controller="Auth"
+                       asp-action="Login"
+                       class="btn btn-outline-primary btn-lg">
+                        Sign in
+                    </a>
+                </div>
+
+                <p class="hero-note mt-3">
+                    Find an event. Take the challenge. Make it count.
+                </p>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="hero-image-area p-0 overflow-hidden">
+                    <img src="~/images/hero.jpg"
+                         alt="Runners on race day in Cape Town"
+                         style="width:100%; height:100%; min-height:340px; object-fit:cover; display:block;" />
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="home-intro text-center">
+        <span class="section-label">THE RACEDAY EXPERIENCE</span>
+
+        <h2>Everything starts with a challenge</h2>
+
+        <p>
+            RaceDay brings sporting events and participants together.
+            Whether you are looking for your next event or managing one,
+            RaceDay helps make the experience easier.
+        </p>
+    </section>
+
+    <!-- Feature cards -->
+    <section class="home-features">
+        <h2 class="mb-4" style="font-weight:750;">Everything you need for race day</h2>
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="feature-card h-100" style="background:#FFE4D6; border:none;">
+                    <div class="feature-icon"><span>📅</span></div>
+                    <h3>Discover events</h3>
+                    <p>Find upcoming sporting events.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="feature-card h-100" style="background:#FFF0E7; border:none;">
+                    <div class="feature-icon"><span>📝</span></div>
+                    <h3>Register easily</h3>
+                    <p>Join events that interest you.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="feature-card h-100" style="background:#FFF0E7; border:none;">
+                    <div class="feature-icon"><span>🏆</span></div>
+                    <h3>Track results</h3>
+                    <p>Follow your race performance.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="feature-card h-100" style="background:#FFE4D6; border:none;">
+                    <div class="feature-icon"><span>👥</span></div>
+                    <h3>Be part of it</h3>
+                    <p>Connect with the sporting community.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to action -->
+    <section class="home-cta text-center">
+        <h2>Ready to make your move?</h2>
+
+        <p>
+            Join RaceDay and be part of the sporting experience.
+        </p>
+
+        <a asp-controller="Auth"
+           asp-action="Register"
+           class="btn btn-light btn-lg">
+            Join RaceDay
+        </a>
+    </section>
+
 </div>
+
