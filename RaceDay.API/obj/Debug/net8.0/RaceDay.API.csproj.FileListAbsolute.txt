@@ -176,7 +176,6 @@ C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\static
 C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\swae.build.ex.cache
-C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\RaceDay..F786E5D0.Up2Date
 C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\RaceDay.API.dll
 C:\Users\Chantel\source\repos\RaceDay-Github\RaceDay.API\obj\Debug\net8.0\refint\RaceDay.API.dll

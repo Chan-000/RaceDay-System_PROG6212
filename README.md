@@ -153,3 +153,25 @@ Github Actions workflow automatically builds the solution and run all unit tests
 
 ### Youtube Link (part2)
 https://youtu.be/1EV88q-0XOM
+
+## Part 3
+
+### Running RaceDay MVC with Docker
+API (Terminal 1):
+dotnet run --project RaceDay.Api --urls http://0.0.0.0:5000
+
+Build (Terminal 2):
+docker build -f RaceDay.Mvc/Dockerfile -t raceday-mvc:part3 .
+
+Run (Terminal 2):
+docker run -d --name raceday-mvc -p 8080:8080 -e ApiSettings__BaseUrl=http://host.docker.internal:5000/ raceday-mvc:part3
+
+Open: http://localhost:8080
+To view the container logs:
+docker logs raceday-mvc
+
+To stop the container:
+docker stop raceday-mvc
+
+To start it again:
+docker start raceday-mvc

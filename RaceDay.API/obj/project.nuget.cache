@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "oQi/MCf8hbI=",
+  "dgSpecHash": "4Qru8OGxPcI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.API\\RaceDay.API.csproj",
+  "projectFilePath": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.Api\\RaceDay.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Chantel\\.nuget\\packages\\apache.arrow\\22.1.0\\apache.arrow.22.1.0.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\azure.core\\1.60.0\\azure.core.1.60.0.nupkg.sha512",
@@ -94,8 +94,8 @@
     "C:\\Users\\Chantel\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
-    "C:\\Users\\Chantel\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.27\\microsoft.windowsdesktop.app.ref.8.0.27.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.27\\microsoft.netcore.app.ref.8.0.27.nupkg.sha512",
+    "C:\\Users\\Chantel\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.27\\microsoft.windowsdesktop.app.ref.8.0.27.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.27\\microsoft.aspnetcore.app.ref.8.0.27.nupkg.sha512",
     "C:\\Users\\Chantel\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.27\\microsoft.netcore.app.host.win-x64.8.0.27.nupkg.sha512"
   ],

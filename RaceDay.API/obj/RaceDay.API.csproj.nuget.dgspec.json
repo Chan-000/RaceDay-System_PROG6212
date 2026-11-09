@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.API\\RaceDay.API.csproj": {}
+    "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.Api\\RaceDay.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.API\\RaceDay.API.csproj": {
+    "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.Api\\RaceDay.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.API\\RaceDay.API.csproj",
+        "projectUniqueName": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.Api\\RaceDay.API.csproj",
         "projectName": "RaceDay.API",
-        "projectPath": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.API\\RaceDay.API.csproj",
+        "projectPath": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.Api\\RaceDay.API.csproj",
         "packagesPath": "C:\\Users\\Chantel\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.API\\obj\\",
+        "outputPath": "C:\\Users\\Chantel\\source\\repos\\RaceDay-Github\\RaceDay.Api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
